@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { BrowserRouter } from "react-router-dom";
 import AppRouter from "./router/AppRouter";
 import CustomNavbar from "./components/Menu/Navbar";
 import "./App.css";
@@ -11,11 +9,15 @@ function App() {
 
   return (
     <div className="App">
-      <CustomNavbar />
-      <AppRouter />
+      <BrowserRouter>
+        <CustomNavbar />
+        <AppRouter />
+      </BrowserRouter>
     </div>
   );
 }
+
+export default App;
 
 /* <> Dejo esto aqui si es que le sirve de base a alguien, de momento el archivo tiene refresh automatico conforme le demos guardar al archivo, posiblemente de parte de vite
 
@@ -40,5 +42,3 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </> */
-
-export default App;

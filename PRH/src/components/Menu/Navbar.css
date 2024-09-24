@@ -25,7 +25,7 @@ button {
   background-color: #62adf3;
   color: #fff;
   line-height: 140%;
-  transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 button:focus {
@@ -44,8 +44,8 @@ button:focus {
     flex-direction: column;
   }
 
-  button {
-    margin-bottom: 10px;
+  .navbar-bar .btn {
     width: 100%;
+    margin-bottom: 10px;
   }
 }
