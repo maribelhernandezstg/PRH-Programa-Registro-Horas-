@@ -1,17 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import AppRouter from './router/AppRouter';
-import './App.css';
+import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import AppRouter from "./router/AppRouter";
+import CustomNavbar from "./components/Menu/Navbar";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
-    <div>
-    <AppRouter />
-  </div>
-  )
+    <div className="App">
+      <CustomNavbar />
+      <AppRouter />
+    </div>
+  );
 }
 
 /* <> Dejo esto aqui si es que le sirve de base a alguien, de momento el archivo tiene refresh automatico conforme le demos guardar al archivo, posiblemente de parte de vite
@@ -38,4 +41,4 @@ function App() {
       </p>
     </> */
 
-export default App
+export default App;
