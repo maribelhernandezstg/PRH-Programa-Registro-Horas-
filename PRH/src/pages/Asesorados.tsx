@@ -1,12 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap";
+import "../App.css";
+import { Filters } from "../components/Filters/Filters";
 
 const Asesorados = () => {
   return (
-    <Container>
-      <Row className="mt-5">
-        <Col>
-          <h1>Bienvenido a Asesorados</h1>
-        </Col>
+    <Container className="window-container">
+      <Row className="">
+        <p className="title-container">Asesorados</p>
+        <Filters />
       </Row>
     </Container>
   );

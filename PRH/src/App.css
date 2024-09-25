@@ -22,6 +22,19 @@ html,
   z-index: 1000;
 }
 
+.window-container {
+  background-color: #f7f7f7;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.title-container {
+  font-size: 20px;
+  color: #818181;
+}
+
 /*
 .logo {
   height: 6em;

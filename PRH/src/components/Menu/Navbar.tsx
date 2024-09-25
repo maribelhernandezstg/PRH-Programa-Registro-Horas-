@@ -19,7 +19,7 @@ const CustomNavbar = () => {
           className="d-flex justify-content-center align-items-center"
         >
           <Icon className="logo-icon" />
-          <div className="logo-text">LOGO PROVISIONAL</div>
+          <div className="logo-text">Dept. Asesorias</div>
         </Col>
 
         <Col
