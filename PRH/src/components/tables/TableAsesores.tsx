@@ -3,7 +3,17 @@
 import React from 'react';
 import { Table, Button } from "react-bootstrap";
 
-const AsesoresTable = ({ registros }) => {
+// Define la interfaz para las props
+interface AsesoresTableProps {
+  registros: {
+    asesorado: string;
+    matricula: string;
+    carrera: string;
+    genero: string;
+  }[];
+}
+
+const AsesoresTable: React.FC<AsesoresTableProps> = ({ registros }) => {
   return (
     <Table striped bordered hover className="mt-4 rounded-table">
       <thead>
