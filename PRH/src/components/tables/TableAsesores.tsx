@@ -1,7 +1,7 @@
 // src/components/AsesoresTable.tsx
 
 import React from 'react';
-import { Table, Button } from "react-bootstrap";
+import { Table, Button } from 'react-bootstrap';
 
 // Define la interfaz para las props
 interface AsesoresTableProps {
@@ -34,14 +34,14 @@ const AsesoresTable: React.FC<AsesoresTableProps> = ({ registros }) => {
               <td>{registro.carrera}</td>
               <td>{registro.genero}</td>
               <td>
-                <Button className="button">Editar</Button>{" "}
+                <Button className="button">Editar</Button>{' '}
                 <Button className="buttonRed">Borrar</Button>
               </td>
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan="5" className="text-center">
+            <td colSpan={5} className="text-center">
               No se encontraron registros
             </td>
           </tr>
