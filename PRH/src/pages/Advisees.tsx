@@ -1,13 +1,13 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import '../App.css';
 import { Filters } from '../components/Filters/Filters';
-import AsesoresTable from '../components/tables/TableAsesores';
 import { useState } from 'react';
+import AdvisorTable from '../components/Tables/AdvisorTable';
 
-const Asesorados = () => {
-  const [searchAsesorado, setSearchAsesorado] = useState('');
-  const [searchMateria, setSearchMateria] = useState('');
-  const [searchAsesor, setSearchAsesor] = useState('');
+const Advisees = () => {
+  const [searchAsesorado] = useState('');
+  const [searchMateria] = useState('');
+  const [searchAsesor] = useState('');
 
   const registrosAsesorados = [
     {
@@ -37,13 +37,10 @@ const Asesorados = () => {
     <Container className="window-container">
       <Row>
         <p className="title-container">Asesorados</p>
-
         <Filters />
-        {/* Tabla de Asesorados */}
         <Col>
           <div className="table-container">
-            {/* Pasamos los registros filtrados a AsesoresTable */}
-            <AsesoresTable registros={filteredRegistros} />
+            <AdvisorTable DataSource={filteredRegistros} />
           </div>
         </Col>
       </Row>
@@ -51,4 +48,4 @@ const Asesorados = () => {
   );
 };
 
-export default Asesorados;
+export default Advisees;
