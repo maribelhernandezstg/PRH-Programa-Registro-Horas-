@@ -1,6 +1,6 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
-import { BsPersonBadge, BsPersonVideo3, BsPersonVcard } from 'react-icons/bs';
+
 interface AdvisorTableProps {
   DataSource: {
     asesorado: string;
