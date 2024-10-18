@@ -12,8 +12,8 @@
   color: #205acb;
   font-size: 20px;
   margin-left: 10px;
-  font-family: Istok Web, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-family: Istok Web, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
 }
 
 button {

@@ -1,11 +1,8 @@
-// src/components/AsesoresTable.tsx
-
 import React from 'react';
-import { Table, Button } from "react-bootstrap";
+import { Table, Button } from 'react-bootstrap';
 
-// Define la interfaz para las props
-interface AsesoresTableProps {
-  registros: {
+interface AdvisorTableProps {
+  DataSource: {
     asesorado: string;
     matricula: string;
     carrera: string;
@@ -13,7 +10,7 @@ interface AsesoresTableProps {
   }[];
 }
 
-const AsesoresTable: React.FC<AsesoresTableProps> = ({ registros }) => {
+const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource }) => {
   return (
     <Table striped bordered hover className="mt-4 rounded-table">
       <thead>
@@ -26,23 +23,23 @@ const AsesoresTable: React.FC<AsesoresTableProps> = ({ registros }) => {
         </tr>
       </thead>
       <tbody>
-        {registros.length > 0 ? (
-          registros.map((registro, index) => (
+        {DataSource.length > 0 ? (
+          DataSource.map((registro, index) => (
             <tr key={index}>
               <td>{registro.asesorado}</td>
               <td>{registro.matricula}</td>
               <td>{registro.carrera}</td>
               <td>{registro.genero}</td>
               <td>
-                <Button className="button">Editar</Button>{" "}
+                <Button className="button">Editar</Button>{' '}
                 <Button className="buttonRed">Borrar</Button>
               </td>
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan="5" className="text-center">
-              No se encontraron registros
+            <td colSpan={5} className="text-center">
+              No se encontraron asesores
             </td>
           </tr>
         )}
@@ -51,4 +48,4 @@ const AsesoresTable: React.FC<AsesoresTableProps> = ({ registros }) => {
   );
 };
 
-export default AsesoresTable;
+export default AdvisorTable;
