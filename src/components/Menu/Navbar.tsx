@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Icon } from './Icon';
+import AdvicesDepartmentIcon from '../../assets/AsesoriasIcon.jpeg';
 import {
   BsPersonBadge,
   BsPersonVideo3,
@@ -19,17 +19,25 @@ const CustomNavbar = () => {
   };
 
   return (
-    <Container fluid className="navbar-bar bg-dark text-white">
+    <Container fluid className="navbar-bar bg-dark text-white ps-4 pe-4">
       <Row>
         <Col
           xs={2}
+          lg={2}
           className="d-flex justify-content-center align-items-center">
-          <Icon className="logo-icon" />
-          <div className="logo-text">Asesorías FCFM</div>
+          <div>
+            <img
+              src={AdvicesDepartmentIcon}
+              alt="Icon"
+              className="rounded logo-icon"
+            />
+          </div>
+          <div className="logo-text fw-bold">ASESORÍAS FCFM</div>
         </Col>
 
         <Col
           xs={10}
+          lg={10}
           className="d-lg-none d-flex justify-content-end align-items-center">
           <Button variant="outline-light" onClick={toggleNavbar}>
             Menú
@@ -39,7 +47,7 @@ const CustomNavbar = () => {
         <Col
           xs={12}
           lg={10}
-          className={`d-lg-flex justify-content-around align-items-center ${
+          className={`d-lg-flex justify-content-between align-items-center ${
             isOpen ? 'd-block' : 'd-none'
           }`}>
           <Link to="/asesorias">
