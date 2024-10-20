@@ -1,7 +1,15 @@
 // src/pages/Asesores.tsx
-
+import '../App.css';
 import { useState } from 'react';
-import { Container, Row, Col, Button, FormControl } from 'react-bootstrap';
+import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
+import {
+  BsFillFilePersonFill,
+  BsBook,
+  BsPersonWorkspace,
+  BsPersonAdd,
+  BsSearch,
+} from 'react-icons/bs';
+
 import AdvisorTable from '../components/Tables/AdvisorTable';
 import '../components/tables/Styles.css';
 
@@ -38,44 +46,76 @@ const Advisors = () => {
   );
 
   return (
-    <Container>
-      <Row className="mt-5">
+    <Container className="mt-3">
+      <Row>
+        <h1 className="fs-3 fw-bold text-center">Asesores</h1>
         <Col>
-          <h1>Asesores</h1>
-          <div className="d-flex justify-content-end mb-3">
-            <Button
-              className="button"
-              onClick={() => console.log('Nuevo registro agregado')}>
-              Registro Entrada y Salida
-            </Button>
+          <div className="mt-2">
+            <div className="d-flex justify-content-end">
+              <Button
+                className="button"
+                onClick={() => console.log('Nuevo registro agregado')}>
+                Registro Entrada y Salida
+              </Button>
+            </div>
           </div>
+          <div className="m-2 d-flex align-items-center justify-content-center">
+            <div className="d-flex w-100">
+              <div className="d-flex w-75">
+                <InputGroup className="w-75 me-3">
+                  <InputGroup.Text id="basic-addon1">
+                    {' '}
+                    <BsFillFilePersonFill className="fs-5" />
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Asesorado"
+                    aria-label="Asesorado"
+                    value={searchAsesorado}
+                    aria-describedby="basic-addon1"
+                    onChange={(e) => setSearchAsesorado(e.target.value)}
+                  />
+                </InputGroup>
 
-          <div className="d-flex justify-content-between mb-3">
-            <FormControl
-              type="text"
-              placeholder="Asesorado"
-              className="me-2"
-              value={searchAsesorado}
-              onChange={(e) => setSearchAsesorado(e.target.value)}
-            />
-            <FormControl
-              type="text"
-              placeholder="Materia"
-              className="me-2"
-              value={searchMateria}
-              onChange={(e) => setSearchMateria(e.target.value)}
-            />
-            <FormControl
-              type="text"
-              placeholder="Asesor"
-              className="me-2"
-              value={searchAsesor}
-              onChange={(e) => setSearchAsesor(e.target.value)}
-            />
-            <Button className="me-2" onClick={() => console.log('Buscando...')}>
-              Buscar
-            </Button>
-            <Button className="button">Agregar Asesor</Button>
+                <InputGroup className="w-75 me-3">
+                  <InputGroup.Text id="basic-addon2">
+                    {' '}
+                    <BsBook className="fs-5" />
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Materia"
+                    aria-label="Materia"
+                    value={searchMateria}
+                    aria-describedby="basic-addon2"
+                    onChange={(e) => setSearchMateria(e.target.value)}
+                  />
+                </InputGroup>
+
+                <InputGroup className="w-75 me-3">
+                  <InputGroup.Text id="basic-addon3">
+                    {' '}
+                    <BsPersonWorkspace className="fs-5" />
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Asesor"
+                    aria-label="Asesor"
+                    value={searchAsesor}
+                    aria-describedby="basic-addon3"
+                    onChange={(e) => setSearchAsesor(e.target.value)}
+                  />
+                </InputGroup>
+              </div>
+              <div className="d-flex w-25 justify-content-end">
+                <Button
+                  className="button me-3"
+                  onClick={() => console.log('Buscando...')}>
+                  <BsSearch />
+                  Buscar
+                </Button>
+                <Button className="button" variant="success">
+                  <BsPersonAdd /> Asesor
+                </Button>
+              </div>
+            </div>
           </div>
 
           <div className="table-container">

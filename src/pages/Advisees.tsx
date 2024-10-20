@@ -34,9 +34,9 @@ const Advisees = () => {
   );
 
   return (
-    <Container className="window-container">
+    <Container className="mt-3">
       <Row>
-        <p className="title-container">Asesorados</p>
+        <h1 className="fs-3 fw-bold text-center">Asesorados</h1>
         <Filters />
         <Col>
           <div className="table-container">
