@@ -1,30 +1,29 @@
 import { Container, Row, Col } from 'react-bootstrap';
-import AdvicesDepartentImage from '../../assets/Asesorias1.jpeg';
-import './Home.css';
+import AdvicesDepartmentImage from '../assets/Asesorias1.jpeg';
 
 const Home = () => {
   return (
     <Container>
-      <Row className="mt-5">
+      <Row className="mt-4">
         <Col xs={12} md={8}>
-          <div className="header-text">
+          <div className="fs-2 fw-bold text-start">
             Bienvenido al Sistema de Registro de Horas
           </div>
-          <p className="lead-text">
+          <p className="fs-5 text-start pt-2 pb-2">
             Este es el sistema donde podrás gestionar el registro y seguimiento
             de tus horas laborales. Navega por las diferentes secciones para
             acceder a las funcionalidades que necesites.
           </p>
-          <p className="secondary-text">
+          <p className="text-primary text-center">
             Puedes empezar revisando tu perfil o los proyectos asignados desde
             el menú superior.
           </p>
         </Col>
         <Col xs={12} md={4}>
           <img
-            src={AdvicesDepartentImage}
+            src={AdvicesDepartmentImage}
             alt="Imagen Ejemplo"
-            className="img-fluid custom-img"
+            className="img-fluid rounded"
           />
         </Col>
       </Row>

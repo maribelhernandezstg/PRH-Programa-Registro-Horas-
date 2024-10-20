@@ -2,10 +2,10 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 const Reports = () => {
   return (
-    <Container>
-      <Row className="mt-5">
+    <Container className="mt-3">
+      <Row>
         <Col>
-          <h1>Reportes</h1>
+          <h1 className="fs-3 fw-bold text-center">Reportes</h1>
         </Col>
       </Row>
     </Container>

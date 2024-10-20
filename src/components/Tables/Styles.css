@@ -1,68 +1,68 @@
 .button {
-    font-size: 18px;
-    padding: 10px 20px;
-    border: none !important;
-    outline: none;
-    border-radius: 5px;
-    background-color: #62adf3 !important; /* Se asegura que se aplique */
-    color: #fff;
-    line-height: 140%;
-    transition: background-color 0.3s, box-shadow 0.3s;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none !important;
+  outline: none;
+  border-radius: 5px;
+  background-color: #62adf3 !important; /* Se asegura que se aplique */
+  color: #fff;
+  line-height: 140%;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .buttonRed {
-    font-size: 18px;
-    padding: 10px 20px;
-    border: none !important;
-    outline: none;
-    border-radius: 5px;
-    background-color: red !important; /* Aquí se agrega el !important */
-    color: #fff;
-    line-height: 140%;
-    transition: background-color 0.3s, box-shadow 0.3s;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none !important;
+  outline: none;
+  border-radius: 5px;
+  background-color: red !important; /* Aquí se agrega el !important */
+  color: #fff;
+  line-height: 140%;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .button:focus {
-    outline: none;
-    box-shadow: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .button:hover,
 .button:focus {
-    background-color: #5296e5 !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #5296e5 !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 
 .rounded-table {
-    border-radius: 20px !important; 
-    overflow: hidden; 
-    border-collapse: separate;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  border-radius: 20px !important;
+  overflow: hidden;
+  border-collapse: separate;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.rounded-table th, .rounded-table td {
-    border: 1px black;
-    padding: 12px; 
+.rounded-table th,
+.rounded-table td {
+  border: 1px black;
+  padding: 12px;
 }
 
 .rounded-table th {
-    background-color: black;
-    text-align: left; 
+  background-color: black;
+  text-align: left;
+  color: white;
 }
 
 .rounded-table tr:hover {
-    background-color: #f9f9f9; 
+  background-color: #f9f9f9;
 }
 
-
 .table-container {
-    border-radius: 15px; 
-    background-color: #ffffff; 
-    padding: 20px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    margin-top: 20px;
-    overflow: hidden; 
+  border-radius: 15px;
+  background-color: #ffffff;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  overflow: hidden;
 }
 .filters-container {
   display: flex;
@@ -153,4 +153,3 @@
     margin-top: 10px;
   }
 }
-

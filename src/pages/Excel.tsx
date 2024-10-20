@@ -1,31 +1,39 @@
-import { Container, Row, Col, Button, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Form, InputGroup } from 'react-bootstrap';
 
 const Excel = () => {
   return (
     <Container>
-      <Row className="justify-content-center mt-5">
-        <Col md={6} className="text-center">
-          
-          <h2 className="mb-4">Cargar un Excel de Asesores</h2>
+      <Row className="d-flex justify-content-center mt-3">
+        <Col md={6} className="text-start">
+          <h1 className="fs-3 fw-bold text-center">Excel</h1>
+          <h2 className="mb-4 fs-4 text-center">Cargar un Excel de Asesores</h2>
           <p>(Ejemplo de columnas: Nombre, Matrícula, Carrera, Género)</p>
 
           {/*Cargar Excel */}
           <Form>
             <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Selecciona el archivo Excel:</Form.Label>
-              <Form.Control type="file" />
+              <Form.Label className="fw-bold">
+                Selecciona el archivo Excel:
+              </Form.Label>
+              <InputGroup className="mb-3">
+                <Form.Control aria-describedby="basic-addon2" type="file" />
+                <Button variant="primary" id="button-addon2">
+                  Cargar Excel
+                </Button>
+              </InputGroup>
             </Form.Group>
-            <Button variant="primary" className="mb-4">
-              Cargar Excel
-            </Button>
           </Form>
 
           {/*Generar Reporte*/}
-          <h4>Generar un reporte de Excel</h4>
-          <p>
+          <h2 className="mb-2 mt-2 fs-4 text-center">
+            Generar un reporte de Excel
+          </h2>
+          <p className="text-start">
             Esto lo genera y dejara descargar en una carpeta a tu eleccion
           </p>
-          <Button variant="success">Descargar Excel</Button>
+          <div className="d-flex justify-content-center">
+            <Button variant="success">Descargar Excel</Button>
+          </div>
         </Col>
       </Row>
     </Container>
