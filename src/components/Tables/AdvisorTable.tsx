@@ -1,38 +1,44 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
+import { BsPencilSquare, BsXSquareFill } from 'react-icons/bs';
 
 interface AdvisorTableProps {
   DataSource: {
-    asesorado: string;
-    matricula: string;
-    carrera: string;
-    genero: string;
+    Name: string;
+    Enrollment: string;
+    Gender: string;
+    DegreeIdentity: string;
   }[];
 }
 
 const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource }) => {
   return (
-    <Table striped bordered hover className="mt-4 rounded-table">
+    <Table striped bordered hover className="mt-4 rounded-table text-center">
       <thead>
-        <tr>
-          <th>Asesorado</th>
-          <th>Matrícula</th>
-          <th>Carrera</th>
-          <th>Género</th>
-          <th>Acciones</th>
+        <tr className="fs-6 fw-bold">
+          <th className="text-center">Nombre</th>
+          <th className="text-center">Matrícula</th>
+          <th className="text-center">Carrera</th>
+          <th className="text-center">Género</th>
+          <th className="text-center">Acciones</th>
         </tr>
       </thead>
       <tbody>
         {DataSource.length > 0 ? (
           DataSource.map((registro, index) => (
             <tr key={index}>
-              <td>{registro.asesorado}</td>
-              <td>{registro.matricula}</td>
-              <td>{registro.carrera}</td>
-              <td>{registro.genero}</td>
+              <td>{registro.Name}</td>
+              <td>{registro.Enrollment}</td>
+              <td>{registro.DegreeIdentity}</td>
+              <td>{registro.Gender}</td>
               <td>
-                <Button className="button">Editar</Button>{' '}
-                <Button className="buttonRed">Borrar</Button>
+                <Button className="button">
+                  <BsPencilSquare className="fs-5 me-1"></BsPencilSquare>Editar
+                </Button>{' '}
+                <Button className="buttonRed">
+                  <BsXSquareFill className="fs-5 me-1"></BsXSquareFill>
+                  Borrar
+                </Button>
               </td>
             </tr>
           ))
