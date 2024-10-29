@@ -1,0 +1,29 @@
+.imgContainer{
+    max-width: 70%;
+}
+
+.backgorundPattern{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(145deg, rgba(33,53,71,1) 0%, rgba(100,108,255,1) 35%, rgba(174,211,253,1) 100%);
+}
+
+.containerHeight{
+    height: 100vh;
+}
+
+.submitBtn{
+    background-color: #646cff;
+    min-width: 25vh;
+}
+
+.header{
+    text-shadow: 2px 2px 2px #213547;
+}
+
+#transparentRow{
+    background: rgba(0, 0, 0, 0.3);
+}

@@ -5,7 +5,7 @@ import Asesores from '../pages/Advisors';
 import Asesorados from '../pages/Advisees';
 import Asesorias from '../pages/Advices';
 import Reportes from '../pages/Reports';
-import Login from '../pages/Login';
+import Login from '../pages/Login/Login';
 
 const AppRouter = () => (
   <Routes>
