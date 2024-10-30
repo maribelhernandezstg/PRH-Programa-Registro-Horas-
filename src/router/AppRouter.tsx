@@ -6,11 +6,13 @@ import Asesorados from '../pages/Advisees';
 import Asesorias from '../pages/Advices';
 import Reportes from '../pages/Reports';
 import Login from '../pages/Login/Login';
+import Register from '../pages/Register';
 
 const AppRouter = () => (
   <Routes>
     <Route path="/" element={<Home />} />
     <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
     <Route path="/excel" element={<Excel />} />
     <Route path="/asesores" element={<Asesores />} />
     <Route path="/asesorados" element={<Asesorados />} />
