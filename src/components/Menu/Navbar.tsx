@@ -26,7 +26,7 @@ const CustomNavbar = () => {
         <Col xs={10} lg={4}>
           <Link
             to="/"
-            className="d-flex justify-content-center align-items-center me-4"
+            className="d-flex justify-content-center align-items-center me-4 logo-container"
           >
             <div>
               <img
@@ -42,7 +42,11 @@ const CustomNavbar = () => {
         </Col>
 
         <Col xs={2} lg={0} className="d-lg-none">
-          <Button variant="outline-light" onClick={toggleNavbar}>
+          <Button
+            variant="outline-light"
+            onClick={toggleNavbar}
+            className="menu-toggle-btn"
+          >
             <BsList /> Menú
           </Button>
         </Col>

@@ -1,11 +1,24 @@
 .navbar-bar {
   padding: 15px 0;
-  background-image: linear-gradient(90deg, #73cdffff 0%, #5296e5ff 100%);
+  background-image: linear-gradient(90deg, #73cdff 0%, #5296e5 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .logo-icon {
   width: 50px;
   height: 50px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.menu-toggle-btn {
+  display: none;
 }
 
 .logo-text {
@@ -14,6 +27,7 @@
   margin-left: 10px;
   font-family: Istok Web, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  text-align: center;
 }
 
 button {
@@ -24,7 +38,6 @@ button {
   border-radius: 5px;
   background-color: #62adf3;
   color: #fff;
-  line-height: 140%;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
@@ -40,12 +53,41 @@ button:focus {
 }
 
 @media (max-width: 768px) {
-  .navbar-bar {
+  .logo-container {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .menu-toggle-btn {
+    display: block;
+    margin-left: auto;
+    margin-right: 15px;
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+
+  .logo-text {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 390px) {
+  .logo-container {
     flex-direction: column;
   }
 
-  .navbar-bar .btn {
-    width: 150px;
-    margin-bottom: 10px;
+  .logo-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .menu-toggle-btn {
+    display: block;
+    padding: 5px 8px;
+    font-size: 14px;
+  }
+
+  .logo-text {
+    font-size: 14px;
   }
 }
