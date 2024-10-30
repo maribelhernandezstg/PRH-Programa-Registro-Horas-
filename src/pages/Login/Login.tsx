@@ -8,7 +8,7 @@ import './Login.css';
 
 const Login = () => {
   return (
-    <div className='backgorundPattern'>
+    <div className='backgroundPattern'>
       <Container className='d-flex align-items-center containerHeight px-4'>
       <Row id='transparentRow' className="d-flex flex-row justify-content-center align-items-center p-4 card shadow">
       <Col md={8} lg={6} xl={6} className='p-5 d-flex mb-auto flex-column'>
