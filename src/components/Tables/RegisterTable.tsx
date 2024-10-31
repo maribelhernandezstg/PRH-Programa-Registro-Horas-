@@ -8,12 +8,14 @@ interface RegisterTableProps {
     Enrollment: string;
     Active: boolean;
   }[];
+  toggleUserStatus: (enrollment: string) => void;
 }
 
 
 
-const RegisterTable: React.FC<RegisterTableProps> = ({ DataSource }) => {
+const RegisterTable: React.FC<RegisterTableProps & { handleEditUser: (usuario: { Name: string; Enrollment: string; Active: boolean }) => void; } > = ({ DataSource, toggleUserStatus, handleEditUser  }) => {
   return (
+    <div className='table-responsive'>
     <Table striped bordered hover className="mt-4 rounded-table text-center">
       <thead>
         <tr className="fs-6 fw-bold">
@@ -25,7 +27,7 @@ const RegisterTable: React.FC<RegisterTableProps> = ({ DataSource }) => {
       </thead>
       <tbody>
         {DataSource.length > 0 ? (
-          DataSource.map((registro, index) => (
+              DataSource.map((registro, index) => (
             <tr key={index}>
               <td>{registro.Name}</td>
               <td>{registro.Enrollment}</td>
@@ -35,12 +37,16 @@ const RegisterTable: React.FC<RegisterTableProps> = ({ DataSource }) => {
                 <p>Inactivo</p>
               )}</td>
               <td>
-                <Button className="button">
-                  <BsPencilSquare className="fs-5 me-1"></BsPencilSquare>Editar
+                <Button className="button text-center m-1" style={{ minWidth: '125px' }} onClick={() => handleEditUser(registro)}>
+                  <BsPencilSquare className="fs-5 m-1"></BsPencilSquare>Editar
                 </Button>{' '}
-                <Button className="buttonRed">
-                  <BsXSquareFill className="fs-5 me-1"></BsXSquareFill>
-                  Borrar
+                <Button className="buttonRed text-start m-1" style={{ minWidth: '125px' }} onClick={() => toggleUserStatus(registro.Enrollment)}>
+                  <BsXSquareFill className="fs-5 m-1"></BsXSquareFill>
+                  {registro.Active ? (
+                <>Desactivar</>
+              ) : (
+                <>Activar</>
+              )}
                 </Button>
               </td>
             </tr>
@@ -54,6 +60,7 @@ const RegisterTable: React.FC<RegisterTableProps> = ({ DataSource }) => {
         )}
       </tbody>
     </Table>
+    </div>
   );
 };
 
