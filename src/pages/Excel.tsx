@@ -3,7 +3,7 @@ import { BsUpload, BsDownload } from 'react-icons/bs';
 
 const Excel = () => {
   return (
-    <Container className="d-flex justify-content-center align-items-center mt-4">
+    <Container className="d-flex justify-content-center mt-4" style={{ minHeight: '100vh' }}>
       <Row className="w-100 d-flex justify-content-center">
         <Col md={6}>
           <div className="card p-4">

@@ -2,14 +2,14 @@ import { Container, Row, Button, InputGroup, Col, Form } from 'react-bootstrap';
 import '../App.css';
 import { useState } from 'react';
 import AdvisorTable from '../components/Tables/AdvisorTable';
-import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
+import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
 
 const Advisees = () => {
   const [searchName] = useState('');
   const [searchStudentId] = useState('');
   const [searchCareer] = useState('');
 
-  const registrosAsesorados = [
+  const [advisees, setAdviseesData] = useState([
     {
       Name: 'Edson Eduardo',
       Enrollment: '197215',
@@ -76,16 +76,18 @@ const Advisees = () => {
       DegreeIdentity: 'LF',
       Gender: 'Femenino',
     },
-  ];
+  ]);
 
-  const filteredRegistros = registrosAsesorados.filter((registro) => registro.Name.toLowerCase().includes(searchName.toLowerCase()) && registro.DegreeIdentity.toLowerCase().includes(searchStudentId.toLowerCase()) && registro.Enrollment.toLowerCase().includes(searchCareer.toLowerCase()));
+  const filteredAdvisees = advisees.filter((advisee) => advisee.Name.toLowerCase().includes(searchName.toLowerCase()) && advisee.DegreeIdentity.toLowerCase().includes(searchStudentId.toLowerCase()) && advisee.Enrollment.toLowerCase().includes(searchCareer.toLowerCase()));
 
   return (
-    <Container className="mt-3">
-      <Row>
+    <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
+      <Row className="px-2 py-1">
         <Col xs={12} lg={12}>
           <h1 className="fs-3 fw-bold text-start">Asesorados</h1>
         </Col>
+      </Row>
+      <Row className="shadow-sm rounded p-2 my-2">
         <Col xs={12} lg={8} className="d-flex my-2">
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon1">
@@ -112,17 +114,25 @@ const Advisees = () => {
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button -flex align-items-center justify-content-center me-3" onClick={() => console.log('Buscando...')}>
+          <Button className="button d-flex align-items-center justify-content-center me-1">
+            <BsXCircleFill className="me-1 fs-5" />
+            Limpiar
+          </Button>
+          <Button className="button d-flex align-items-center justify-content-center" onClick={() => console.log('Buscando...')}>
             <BsSearch className="me-1 fs-5" />
             Buscar
           </Button>
-          <Button className="button -flex align-items-center justify-content-center" variant="success">
+        </Col>
+      </Row>
+      <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
+        <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
+          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success">
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
         </Col>
         <Col xs={12} lg={12}>
           <div className="table-container">
-            <AdvisorTable DataSource={filteredRegistros} />
+            <AdvisorTable DataSource={filteredAdvisees} />
           </div>
         </Col>
       </Row>

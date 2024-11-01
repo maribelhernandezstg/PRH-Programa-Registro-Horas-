@@ -1,18 +1,19 @@
 import '../App.css';
 import { useState } from 'react';
 import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
-import { BsFillFilePersonFill, BsBook, BsPersonWorkspace, BsPersonAdd, BsSearch } from 'react-icons/bs';
+import { BsFillFilePersonFill, BsBook, BsPersonWorkspace, BsPlusSquareFill, BsSearch, BsXCircleFill } from 'react-icons/bs';
 
 import AdviceTable from '../components/Tables/AdviceTable';
 import '../components/tables/Styles.css';
 const Advices = () => {
-  // <------------ Estados para los filtros ------------>
-  const [searchAsesorado, setSearchAsesorado] = useState('');
-  const [searchMateria, setSearchMateria] = useState('');
-  const [searchAsesor, setSearchAsesor] = useState('');
-  const registros = [
+  // <------------ Filters ------------>
+  const [searchAdvisee, setSearchAdvisee] = useState('');
+  const [searchLearningUnit, setSearchLearningUnit] = useState('');
+  const [searchAdvisor, setSearchAdvisor] = useState('');
+
+  const [advices, setAdvicesData] = useState([
     {
-      AdvisorIdentity: 'Juan Pérez',
+      AdvisorIdentity: 'Ricardo Alberto Grimaldo Estévez',
       AdviseeIdentity: 'Ana Gómez',
       AdviseeStudentId: '87654321',
       LearningUnitIdentity: 'Matemáticas Avanzadas',
@@ -39,7 +40,7 @@ const Advices = () => {
       EndTime: new Date('2024-10-28T15:00:00'),
     },
     {
-      AdvisorIdentity: 'Lic. Sofía García',
+      AdvisorIdentity: 'Sofía García',
       AdviseeIdentity: 'Raúl Herrera',
       AdviseeStudentId: '34567890',
       LearningUnitIdentity: 'Química Orgánica',
@@ -101,23 +102,25 @@ const Advices = () => {
       StartTime: new Date('2024-10-30T12:00:00'),
       EndTime: new Date('2024-10-30T13:00:00'),
     },
-  ];
+  ]);
 
-  const filteredRegistros = registros.filter((registro) => registro.AdviseeIdentity.toLowerCase().includes(searchAsesorado.toLowerCase()) && registro.LearningUnitIdentity.toLowerCase().includes(searchMateria.toLowerCase()) && registro.AdvisorIdentity.toLowerCase().includes(searchAsesor.toLowerCase()));
+  const filteredAdvices = advices.filter((advice) => advice.AdviseeIdentity.toLowerCase().includes(searchAdvisee.toLowerCase()) && advice.LearningUnitIdentity.toLowerCase().includes(searchLearningUnit.toLowerCase()) && advice.AdvisorIdentity.toLowerCase().includes(searchAdvisor.toLowerCase()));
 
   return (
-    <Container className="mt-3">
-      <Row>
+    <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
+      <Row className="px-2 py-1">
         <Col xs={12} lg={12}>
           <h1 className="fs-3 fw-bold text-start">Asesorías</h1>
         </Col>
+      </Row>
+      <Row className="shadow-sm rounded p-2 my-2">
         <Col xs={12} lg={8} className="d-flex my-2">
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon1">
               {' '}
               <BsFillFilePersonFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Asesorado" aria-label="Asesorado" value={searchAsesorado} aria-describedby="basic-addon1" onChange={(e) => setSearchAsesorado(e.target.value)} />
+            <Form.Control placeholder="Asesorado" aria-label="Asesorado" value={searchAdvisee} aria-describedby="basic-addon1" onChange={(e) => setSearchAdvisee(e.target.value)} />
           </InputGroup>
 
           <InputGroup className="me-3">
@@ -125,7 +128,7 @@ const Advices = () => {
               {' '}
               <BsBook className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Materia" aria-label="Materia" value={searchMateria} aria-describedby="basic-addon2" onChange={(e) => setSearchMateria(e.target.value)} />
+            <Form.Control placeholder="Materia" aria-label="Materia" value={searchLearningUnit} aria-describedby="basic-addon2" onChange={(e) => setSearchLearningUnit(e.target.value)} />
           </InputGroup>
 
           <InputGroup className="me-3">
@@ -133,24 +136,31 @@ const Advices = () => {
               {' '}
               <BsPersonWorkspace className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Asesor" aria-label="Asesor" value={searchAsesor} aria-describedby="basic-addon3" onChange={(e) => setSearchAsesor(e.target.value)} />
+            <Form.Control placeholder="Asesor" aria-label="Asesor" value={searchAdvisor} aria-describedby="basic-addon3" onChange={(e) => setSearchAdvisor(e.target.value)} />
           </InputGroup>
         </Col>
 
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button -flex align-items-center justify-content-center me-3" onClick={() => console.log('Buscando...')}>
+          <Button className="button d-flex align-items-center justify-content-center me-1">
+            <BsXCircleFill className="me-1 fs-5" />
+            Limpiar
+          </Button>
+          <Button className="button d-flex align-items-center justify-content-center" onClick={() => console.log('Buscando...')}>
             <BsSearch className="me-1 fs-5" />
             Buscar
           </Button>
-          <Button className="button -flex align-items-center justify-content-center" variant="success">
-            <BsPersonAdd className="me-1 fs-5" /> Agregar
+        </Col>
+      </Row>
+      <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
+        <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
+          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success">
+            <BsPlusSquareFill className="me-1 fs-5" /> Nueva
           </Button>
         </Col>
-
         <Col xs={12} lg={12}>
-          <div className="table-container">
-            <AdviceTable DataSource={filteredRegistros} />
-          </div>
+          <Container>
+            <AdviceTable DataSource={filteredAdvices} />
+          </Container>
         </Col>
       </Row>
     </Container>

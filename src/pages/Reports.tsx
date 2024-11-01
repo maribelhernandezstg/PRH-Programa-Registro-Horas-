@@ -2,7 +2,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 
 const Reports = () => {
   return (
-    <Container className="mt-3">
+    <Container className="mt-3" style={{ minHeight: '100vh' }}>
       <Row>
         <Col>
           <h1 className="fs-3 fw-bold text-center">Reportes</h1>
