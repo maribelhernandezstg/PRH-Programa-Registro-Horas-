@@ -1,8 +1,9 @@
-import { Container, Row, Button, InputGroup, Col, Form } from 'react-bootstrap';
 import '../App.css';
+import { Container, Row, Button, InputGroup, Col, Form } from 'react-bootstrap';
 import { useState } from 'react';
-import AdvisorTable from '../components/Tables/AdvisorTable';
 import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
+
+import AdvisorTable from '../components/Tables/AdvisorTable';
 
 const Advisees = () => {
   const [searchName] = useState('');
@@ -11,67 +12,67 @@ const Advisees = () => {
 
   const [advisees, setAdviseesData] = useState([
     {
-      Name: 'Edson Eduardo',
+      Name: 'Edson Eduardo Salazar Muñoz',
       Enrollment: '197215',
       DegreeIdentity: 'LMAD',
       Gender: 'Masculino',
     },
     {
-      Name: 'Kevin Sanchez',
+      Name: 'Kevin Leonardo Sánchez Ortega',
       Enrollment: '121212',
       DegreeIdentity: 'LMAD',
       Gender: 'Masculino',
     },
     {
-      Name: 'Maria Lopez',
+      Name: 'María Teresa López Castillo',
       Enrollment: '193456',
       DegreeIdentity: 'LSTI',
       Gender: 'Femenino',
     },
     {
-      Name: 'Juan Perez',
+      Name: 'Juan Manuel Pérez Torres',
       Enrollment: '189874',
       DegreeIdentity: 'LMAD',
       Gender: 'Masculino',
     },
     {
-      Name: 'Carla Mendoza',
+      Name: 'Carla Alejandra Mendoza Ruiz',
       Enrollment: '204567',
       DegreeIdentity: 'LCC',
       Gender: 'Femenino',
     },
     {
-      Name: 'Luis Torres',
+      Name: 'Luis Fernando Torres Medina',
       Enrollment: '176543',
       DegreeIdentity: 'LCC',
       Gender: 'Masculino',
     },
     {
-      Name: 'Ana Gonzalez',
+      Name: 'Ana María González Díaz',
       Enrollment: '215678',
       DegreeIdentity: 'LF',
       Gender: 'Femenino',
     },
     {
-      Name: 'Daniel Ramirez',
+      Name: 'Daniel Alejandro Ramírez Jiménez',
       Enrollment: '198765',
       DegreeIdentity: 'LM',
       Gender: 'Masculino',
     },
     {
-      Name: 'Sofia Martinez',
+      Name: 'Sofía Isabel Martínez Paredes',
       Enrollment: '213456',
       DegreeIdentity: 'LA',
       Gender: 'Femenino',
     },
     {
-      Name: 'Pedro Hernandez',
+      Name: 'Pedro Antonio Hernández López',
       Enrollment: '175432',
       DegreeIdentity: 'LM',
       Gender: 'Masculino',
     },
     {
-      Name: 'Laura Silva',
+      Name: 'Laura Patricia Silva Romero',
       Enrollment: '209876',
       DegreeIdentity: 'LF',
       Gender: 'Femenino',
@@ -131,9 +132,9 @@ const Advisees = () => {
           </Button>
         </Col>
         <Col xs={12} lg={12}>
-          <div className="table-container">
+          <Container>
             <AdvisorTable DataSource={filteredAdvisees} />
-          </div>
+          </Container>
         </Col>
       </Row>
     </Container>

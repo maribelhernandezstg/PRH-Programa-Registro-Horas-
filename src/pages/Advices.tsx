@@ -10,11 +10,10 @@ const Advices = () => {
   const [searchAdvisee, setSearchAdvisee] = useState('');
   const [searchLearningUnit, setSearchLearningUnit] = useState('');
   const [searchAdvisor, setSearchAdvisor] = useState('');
-
   const [advices, setAdvicesData] = useState([
     {
       AdvisorIdentity: 'Ricardo Alberto Grimaldo Estévez',
-      AdviseeIdentity: 'Ana Gómez',
+      AdviseeIdentity: 'Ana Isabel Gómez García',
       AdviseeStudentId: '87654321',
       LearningUnitIdentity: 'Matemáticas Avanzadas',
       Topic: 'Álgebra Lineal',
@@ -22,8 +21,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-28T11:00:00'),
     },
     {
-      AdvisorIdentity: 'Laura Torres',
-      AdviseeIdentity: 'Carlos Ramírez',
+      AdvisorIdentity: 'Laura Patricia Torres Morales',
+      AdviseeIdentity: 'Carlos Eduardo Ramírez Sánchez',
       AdviseeStudentId: '12345678',
       LearningUnitIdentity: 'Cálculo Diferencial',
       Topic: 'Cálculo en varias variables',
@@ -31,8 +30,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-28T13:00:00'),
     },
     {
-      AdvisorIdentity: 'Mario Fernández',
-      AdviseeIdentity: 'Lucía Morales',
+      AdvisorIdentity: 'Mario Antonio Fernández Ríos',
+      AdviseeIdentity: 'Lucía Fernanda Morales Pérez',
       AdviseeStudentId: '23456789',
       LearningUnitIdentity: 'Física General',
       Topic: 'Leyes de Newton',
@@ -40,8 +39,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-28T15:00:00'),
     },
     {
-      AdvisorIdentity: 'Sofía García',
-      AdviseeIdentity: 'Raúl Herrera',
+      AdvisorIdentity: 'Sofía Alejandra García Ruiz',
+      AdviseeIdentity: 'Raúl Enrique Herrera Gutiérrez',
       AdviseeStudentId: '34567890',
       LearningUnitIdentity: 'Química Orgánica',
       Topic: 'Reacciones orgánicas',
@@ -49,8 +48,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-29T10:00:00'),
     },
     {
-      AdvisorIdentity: 'Pedro Sánchez',
-      AdviseeIdentity: 'Mariana Ortiz',
+      AdvisorIdentity: 'Pedro José Sánchez Castillo',
+      AdviseeIdentity: 'Mariana Isabel Ortiz Paredes',
       AdviseeStudentId: '45678901',
       LearningUnitIdentity: 'Introducción a la Programación',
       Topic: 'Estructuras de control',
@@ -58,8 +57,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-29T12:00:00'),
     },
     {
-      AdvisorIdentity: 'Alberto Díaz',
-      AdviseeIdentity: 'Gabriel Torres',
+      AdvisorIdentity: 'Alberto Antonio Díaz Rodríguez',
+      AdviseeIdentity: 'Gabriel Eduardo Torres Mendoza',
       AdviseeStudentId: '56789012',
       LearningUnitIdentity: 'Bases de Datos',
       Topic: 'Modelo relacional',
@@ -67,8 +66,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-29T14:00:00'),
     },
     {
-      AdvisorIdentity: 'Verónica Ruiz',
-      AdviseeIdentity: 'Daniela Sánchez',
+      AdvisorIdentity: 'Verónica Alejandra Ruiz Méndez',
+      AdviseeIdentity: 'Daniela Sofía Sánchez Morales',
       AdviseeStudentId: '67890123',
       LearningUnitIdentity: 'Lógica Computacional',
       Topic: 'Tablas de verdad',
@@ -76,8 +75,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-29T16:00:00'),
     },
     {
-      AdvisorIdentity: 'Hugo López',
-      AdviseeIdentity: 'Ricardo Vega',
+      AdvisorIdentity: 'Hugo Felipe López Ortega',
+      AdviseeIdentity: 'Ricardo Esteban Vega Fernández',
       AdviseeStudentId: '78901234',
       LearningUnitIdentity: 'Cálculo Integral',
       Topic: 'Integración por partes',
@@ -85,8 +84,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-30T09:00:00'),
     },
     {
-      AdvisorIdentity: 'Elena Ríos',
-      AdviseeIdentity: 'Carla Núñez',
+      AdvisorIdentity: 'Elena María Ríos García',
+      AdviseeIdentity: 'Carla Patricia Núñez Castillo',
       AdviseeStudentId: '89012345',
       LearningUnitIdentity: 'Inteligencia Artificial',
       Topic: 'Redes neuronales',
@@ -94,8 +93,8 @@ const Advices = () => {
       EndTime: new Date('2024-10-30T11:00:00'),
     },
     {
-      AdvisorIdentity: 'Miguel Luna',
-      AdviseeIdentity: 'José Pérez',
+      AdvisorIdentity: 'Miguel Ángel Luna Hernández',
+      AdviseeIdentity: 'José Manuel Pérez Medina',
       AdviseeStudentId: '90123456',
       LearningUnitIdentity: 'Ingeniería de Software',
       Topic: 'Metodologías ágiles',

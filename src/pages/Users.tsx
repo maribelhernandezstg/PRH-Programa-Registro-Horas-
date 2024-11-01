@@ -8,7 +8,6 @@ import UserModal from '../components/Modals/UserModal';
 import '../components/tables/Styles.css';
 
 const Users = () => {
-  // Estados para los filtros
   const [searchName, setSearchName] = useState('');
   const [searchUserId, setSearchUserId] = useState('');
 
@@ -16,19 +15,18 @@ const Users = () => {
     setRegistrosUsuarios((prev) => prev.map((registro) => (registro.Enrollment === enrollment ? { ...registro, Active: !registro.Active } : registro)));
   };
 
-  // Datos de usuarios (dummy)
   const [registrosUsuarios, setRegistrosUsuarios] = useState([
-    { Name: 'Edson Eduardo', Enrollment: '197215', Active: true },
-    { Name: 'Kevin Sanchez', Enrollment: '121212', Active: true },
-    { Name: 'María López', Enrollment: '201234', Active: true },
-    { Name: 'Juan Pérez', Enrollment: '198765', Active: true },
-    { Name: 'Claudia Fernández', Enrollment: '202345', Active: false },
-    { Name: 'Luis Torres', Enrollment: '199876', Active: true },
-    { Name: 'Ana Martínez', Enrollment: '207654', Active: false },
-    { Name: 'Daniel Ramirez', Enrollment: '210987', Active: false },
-    { Name: 'Sofia González', Enrollment: '215432', Active: true },
-    { Name: 'Pedro Hernández', Enrollment: '205678', Active: true },
-    { Name: 'Laura Silva', Enrollment: '218765', Active: false },
+    { Name: 'Edson Eduardo González Martínez', Enrollment: '197215', Active: true },
+    { Name: 'Kevin Alejandro Sánchez López', Enrollment: '121212', Active: true },
+    { Name: 'María Fernanda López Rodríguez', Enrollment: '201234', Active: true },
+    { Name: 'Juan Carlos Pérez Jiménez', Enrollment: '198765', Active: true },
+    { Name: 'Claudia Patricia Fernández Ruiz', Enrollment: '202345', Active: false },
+    { Name: 'Luis Enrique Torres Morales', Enrollment: '199876', Active: true },
+    { Name: 'Ana Isabel Martínez Paredes', Enrollment: '207654', Active: false },
+    { Name: 'Daniel Antonio Ramírez Castillo', Enrollment: '210987', Active: false },
+    { Name: 'Sofia Gabriela González Méndez', Enrollment: '215432', Active: true },
+    { Name: 'Pedro José Hernández Ortega', Enrollment: '205678', Active: true },
+    { Name: 'Laura Alejandra Silva Gutiérrez', Enrollment: '218765', Active: false },
   ]);
 
   const [show, setShow] = useState(false);

@@ -13,67 +13,67 @@ const Advisors = () => {
 
   const [advisors, setAdvisorsData] = useState([
     {
-      Name: 'Edson Eduardo',
+      Name: 'Edson Eduardo Martínez González',
       Enrollment: '197215',
       DegreeIdentity: 'LMAD',
       Gender: 'Masculino',
     },
     {
-      Name: 'Kevin Sanchez',
+      Name: 'Kevin Alejandro Sánchez Rodríguez',
       Enrollment: '121212',
       DegreeIdentity: 'LMAD',
       Gender: 'Masculino',
     },
     {
-      Name: 'María López',
+      Name: 'María Fernanda López Ramírez',
       Enrollment: '201234',
       DegreeIdentity: 'LMAD',
       Gender: 'Femenino',
     },
     {
-      Name: 'Juan Pérez',
+      Name: 'Juan Carlos Pérez Hernández',
       Enrollment: '198765',
       DegreeIdentity: 'LSTI',
       Gender: 'Masculino',
     },
     {
-      Name: 'Claudia Fernández',
+      Name: 'Claudia Alejandra Fernández Martínez',
       Enrollment: '202345',
       DegreeIdentity: 'LM',
       Gender: 'Femenino',
     },
     {
-      Name: 'Luis Torres',
+      Name: 'Luis Alberto Torres Gutiérrez',
       Enrollment: '199876',
       DegreeIdentity: 'LF',
       Gender: 'Masculino',
     },
     {
-      Name: 'Ana Martínez',
+      Name: 'Ana Sofía Martínez López',
       Enrollment: '207654',
       DegreeIdentity: 'LM',
       Gender: 'Femenino',
     },
     {
-      Name: 'Daniel Ramirez',
+      Name: 'Daniel Antonio Ramírez Sánchez',
       Enrollment: '210987',
       DegreeIdentity: 'LSTI',
       Gender: 'Masculino',
     },
     {
-      Name: 'Sofia González',
+      Name: 'Sofia Guadalupe González Morales',
       Enrollment: '215432',
       DegreeIdentity: 'LA',
       Gender: 'Femenino',
     },
     {
-      Name: 'Pedro Hernández',
+      Name: 'Pedro Luis Hernández Navarro',
       Enrollment: '205678',
       DegreeIdentity: 'LF',
       Gender: 'Masculino',
     },
     {
-      Name: 'Laura Silva',
+      Name: 'Laura Beatriz Silva Fernández',
       Enrollment: '218765',
       DegreeIdentity: 'LM',
       Gender: 'Femenino',
@@ -138,9 +138,9 @@ const Advisors = () => {
           </Button>
         </Col>
         <Col xs={12} lg={12}>
-          <div className="table-container">
+          <Container>
             <AdvisorTable DataSource={filteredAdvisors} />
-          </div>
+          </Container>
         </Col>
       </Row>
     </Container>
