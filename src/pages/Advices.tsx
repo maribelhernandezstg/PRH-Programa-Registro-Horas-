@@ -102,9 +102,17 @@ const Advices = () => {
       EndTime: new Date('2024-10-30T13:00:00'),
     },
   ]);
-
-  const filteredAdvices = advices.filter((advice) => advice.AdviseeIdentity.toLowerCase().includes(searchAdvisee.toLowerCase()) && advice.LearningUnitIdentity.toLowerCase().includes(searchLearningUnit.toLowerCase()) && advice.AdvisorIdentity.toLowerCase().includes(searchAdvisor.toLowerCase()));
-
+  const filteredAdvices = advices.filter((advice) => {
+    const regexAdvisee = new RegExp(searchAdvisee, 'i'); // 'i' para que sea insensible a mayúsculas/minúsculas solo no detecta bien í y ese tipo de letras
+    const regexLearningUnit = new RegExp(searchLearningUnit, 'i');
+    const regexAdvisor = new RegExp(searchAdvisor, 'i');
+  
+    return (
+      regexAdvisee.test(advice.AdviseeIdentity) &&
+      regexLearningUnit.test(advice.LearningUnitIdentity) &&
+      regexAdvisor.test(advice.AdvisorIdentity)
+    );
+  });
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
       <Row className="px-2 py-1">
