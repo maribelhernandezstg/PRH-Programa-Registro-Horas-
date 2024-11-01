@@ -2,14 +2,16 @@ import '../App.css';
 import { useState } from 'react';
 import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
 import { BsFillFilePersonFill, BsBook, BsPersonWorkspace, BsPlusSquareFill, BsSearch, BsXCircleFill } from 'react-icons/bs';
-
 import AdviceTable from '../components/Tables/AdviceTable';
+import AdviceModal from '../components/Modals/AdviceModal'; // Importa el modal
 import '../components/tables/Styles.css';
+
 const Advices = () => {
   // <------------ Filters ------------>
   const [searchAdvisee, setSearchAdvisee] = useState('');
   const [searchLearningUnit, setSearchLearningUnit] = useState('');
   const [searchAdvisor, setSearchAdvisor] = useState('');
+
   const [advices, setAdvicesData] = useState([
     {
       AdvisorIdentity: 'Ricardo Alberto Grimaldo Estévez',
@@ -102,19 +104,70 @@ const Advices = () => {
       EndTime: new Date('2024-10-30T13:00:00'),
     },
   ]);
-  
+
+  // Estado del modal
+  const [showModal, setShowModal] = useState(false);
+  const [newAdvice, setNewAdvice] = useState({
+    AdvisorIdentity: '',
+    AdviseeIdentity: '',
+    AdviseeStudentId: '',
+    LearningUnitIdentity: '',
+    Topic: '',
+    StartTime: new Date(),
+    EndTime: new Date(),
+  });
+  const [errors, setErrors] = useState({
+    AdvisorIdentity: '',
+    AdviseeIdentity: '',
+    AdviseeStudentId: '',
+    LearningUnitIdentity: '',
+    Topic: '',
+  });
+
   const filteredAdvices = advices.filter((advice) => {
-    const regexAdvisee = new RegExp(searchAdvisee, 'i'); // Filtro para Asesorado
-    const regexLearningUnit = new RegExp(searchLearningUnit, 'i'); // Filtro para Materia ambos tiene un problema con í o letras con acento
-    const regexAdvisor = new RegExp(searchAdvisor, 'i'); // Filtro para Asesor
-  
-    // Verificamos si hay valor
+    const regexAdvisee = new RegExp(searchAdvisee, 'i');
+    const regexLearningUnit = new RegExp(searchLearningUnit, 'i');
+    const regexAdvisor = new RegExp(searchAdvisor, 'i');
     return (
       (!searchAdvisee || regexAdvisee.test(advice.AdviseeIdentity)) &&
       (!searchLearningUnit || regexLearningUnit.test(advice.LearningUnitIdentity)) &&
       (!searchAdvisor || regexAdvisor.test(advice.AdvisorIdentity))
     );
   });
+
+  // Funciones para el modal
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAdvice({ ...newAdvice, [name]: value });
+  };
+
+  const handleSaveChanges = () => {
+    const newErrors = {
+      AdvisorIdentity: newAdvice.AdvisorIdentity ? '' : 'Campo requerido',
+      AdviseeIdentity: newAdvice.AdviseeIdentity ? '' : 'Campo requerido',
+      AdviseeStudentId: newAdvice.AdviseeStudentId ? '' : 'Campo requerido',
+      LearningUnitIdentity: newAdvice.LearningUnitIdentity ? '' : 'Campo requerido',
+      Topic: newAdvice.Topic ? '' : 'Campo requerido',
+    };
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).every((error) => error === '')) {
+      setAdvicesData([...advices, newAdvice]);
+      setNewAdvice({
+        AdvisorIdentity: '',
+        AdviseeIdentity: '',
+        AdviseeStudentId: '',
+        LearningUnitIdentity: '',
+        Topic: '',
+        StartTime: new Date(),
+        EndTime: new Date(),
+      });
+      handleCloseModal();
+    }
+  };
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
@@ -130,7 +183,13 @@ const Advices = () => {
               {' '}
               <BsFillFilePersonFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Asesorado" aria-label="Asesorado" value={searchAdvisee} aria-describedby="basic-addon1" onChange={(e) => setSearchAdvisee(e.target.value)} />
+            <Form.Control
+              placeholder="Asesorado"
+              aria-label="Asesorado"
+              value={searchAdvisee}
+              aria-describedby="basic-addon1"
+              onChange={(e) => setSearchAdvisee(e.target.value)}
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
@@ -138,7 +197,13 @@ const Advices = () => {
               {' '}
               <BsBook className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Materia" aria-label="Materia" value={searchLearningUnit} aria-describedby="basic-addon2" onChange={(e) => setSearchLearningUnit(e.target.value)} />
+            <Form.Control
+              placeholder="Materia"
+              aria-label="Materia"
+              value={searchLearningUnit}
+              aria-describedby="basic-addon2"
+              onChange={(e) => setSearchLearningUnit(e.target.value)}
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
@@ -146,7 +211,13 @@ const Advices = () => {
               {' '}
               <BsPersonWorkspace className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Asesor" aria-label="Asesor" value={searchAdvisor} aria-describedby="basic-addon3" onChange={(e) => setSearchAdvisor(e.target.value)} />
+            <Form.Control
+              placeholder="Asesor"
+              aria-label="Asesor"
+              value={searchAdvisor}
+              aria-describedby="basic-addon3"
+              onChange={(e) => setSearchAdvisor(e.target.value)}
+            />
           </InputGroup>
         </Col>
 
@@ -163,7 +234,7 @@ const Advices = () => {
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
         <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
-          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success">
+          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowModal}>
             <BsPlusSquareFill className="me-1 fs-5" /> Nueva
           </Button>
         </Col>
@@ -173,6 +244,16 @@ const Advices = () => {
           </Container>
         </Col>
       </Row>
+
+      {/* Modal para agregar nueva asesoría */}
+      <AdviceModal
+        show={showModal}
+        handleClose={handleCloseModal}
+        handleSaveChanges={handleSaveChanges}
+        advice={newAdvice}
+        handleInputChange={handleInputChange}
+        errors={errors}
+      />
     </Container>
   );
 };
