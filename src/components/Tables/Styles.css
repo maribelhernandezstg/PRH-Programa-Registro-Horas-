@@ -22,6 +22,18 @@
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
+.buttonGreen {
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none !important;
+  outline: none;
+  border-radius: 5px;
+  background-color: rgb(91, 201, 58) !important; /* Aquí se agrega el !important */
+  color: #fff;
+  line-height: 140%;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
 .button:focus {
   outline: none;
   box-shadow: none;
