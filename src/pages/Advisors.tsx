@@ -1,4 +1,3 @@
-// src/pages/Asesores.tsx
 import '../App.css';
 import { useState } from 'react';
 import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
@@ -7,9 +6,9 @@ import { BsArrowDownUp, BsXCircleFill, BsPersonVcardFill, BsPersonBadgeFill, BsM
 import AdvisorTable from '../components/Tables/AdvisorTable';
 
 const Advisors = () => {
-  const [searchName] = useState('');
-  const [searchStudentId] = useState('');
-  const [searchCareer] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchStudentId, setSearchStudentId] = useState('');
+  const [searchCareer, setSearchCareer] = useState('');
 
   const [advisors, setAdvisorsData] = useState([
     {
@@ -80,7 +79,17 @@ const Advisors = () => {
     },
   ]);
 
-  const filteredAdvisors = advisors.filter((advisor) => advisor.Name.toLowerCase().includes(searchName.toLowerCase()) && advisor.DegreeIdentity.toLowerCase().includes(searchStudentId.toLowerCase()) && advisor.Enrollment.toLowerCase().includes(searchCareer.toLowerCase()));
+  const filteredAdvisors = advisors.filter((advisor) => {
+    const regexName = new RegExp(searchName, 'i');
+    const regexStudentId = new RegExp(searchStudentId, 'i');
+    const regexCareer = new RegExp(searchCareer, 'i');
+
+    return (
+      (!searchName || regexName.test(advisor.Name)) &&
+      (!searchStudentId || regexStudentId.test(advisor.Enrollment)) &&
+      (!searchCareer || regexCareer.test(advisor.DegreeIdentity))
+    );
+  });
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
@@ -90,7 +99,7 @@ const Advisors = () => {
         </Col>
         <Col xs={2} lg={4} className="d-flex justify-content-end">
           <Button className="button" onClick={() => console.log('Nuevo advisor agregado')}>
-            <BsArrowDownUp className="fs-5 me-1"></BsArrowDownUp> Entrada y Salida
+            <BsArrowDownUp className="fs-5 me-1" /> Entrada y Salida
           </Button>
         </Col>
       </Row>
@@ -98,30 +107,45 @@ const Advisors = () => {
         <Col xs={12} lg={8} className="d-flex my-2">
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon1">
-              {' '}
               <BsPersonBadgeFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Nombre(s)" aria-label="Nombre(s)" value={searchName} aria-describedby="basic-addon1" />
+            <Form.Control
+              placeholder="Nombre(s)"
+              aria-label="Nombre(s)"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              aria-describedby="basic-addon1"
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon2">
-              {' '}
               <BsPersonVcardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Matrícula" aria-label="Matrícula" value={searchStudentId} aria-describedby="basic-addon2" />
+            <Form.Control
+              placeholder="Matrícula"
+              aria-label="Matrícula"
+              value={searchStudentId}
+              onChange={(e) => setSearchStudentId(e.target.value)}
+              aria-describedby="basic-addon2"
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon3">
-              {' '}
               <BsMortarboardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Carrera" aria-label="Carrera" value={searchCareer} aria-describedby="basic-addon3" />
+            <Form.Control
+              placeholder="Carrera"
+              aria-label="Carrera"
+              value={searchCareer}
+              onChange={(e) => setSearchCareer(e.target.value)}
+              aria-describedby="basic-addon3"
+            />
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button d-flex align-items-center justify-content-center me-1">
+          <Button className="button d-flex align-items-center justify-content-center me-1" onClick={() => { setSearchName(''); setSearchStudentId(''); setSearchCareer(''); }}>
             <BsXCircleFill className="me-1 fs-5" />
             Limpiar
           </Button>

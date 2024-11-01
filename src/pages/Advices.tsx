@@ -102,17 +102,20 @@ const Advices = () => {
       EndTime: new Date('2024-10-30T13:00:00'),
     },
   ]);
-  const filteredAdvices = advices.filter((advice) => {
-    const regexAdvisee = new RegExp(searchAdvisee, 'i'); // 'i' para que sea insensible a mayúsculas/minúsculas solo no detecta bien í y ese tipo de letras
-    const regexLearningUnit = new RegExp(searchLearningUnit, 'i');
-    const regexAdvisor = new RegExp(searchAdvisor, 'i');
   
+  const filteredAdvices = advices.filter((advice) => {
+    const regexAdvisee = new RegExp(searchAdvisee, 'i'); // Filtro para Asesorado
+    const regexLearningUnit = new RegExp(searchLearningUnit, 'i'); // Filtro para Materia ambos tiene un problema con í o letras con acento
+    const regexAdvisor = new RegExp(searchAdvisor, 'i'); // Filtro para Asesor
+  
+    // Verificamos si hay valor
     return (
-      regexAdvisee.test(advice.AdviseeIdentity) &&
-      regexLearningUnit.test(advice.LearningUnitIdentity) &&
-      regexAdvisor.test(advice.AdvisorIdentity)
+      (!searchAdvisee || regexAdvisee.test(advice.AdviseeIdentity)) &&
+      (!searchLearningUnit || regexLearningUnit.test(advice.LearningUnitIdentity)) &&
+      (!searchAdvisor || regexAdvisor.test(advice.AdvisorIdentity))
     );
   });
+
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
       <Row className="px-2 py-1">

@@ -6,9 +6,9 @@ import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill,
 import AdvisorTable from '../components/Tables/AdvisorTable';
 
 const Advisees = () => {
-  const [searchName] = useState('');
-  const [searchStudentId] = useState('');
-  const [searchCareer] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchStudentId, setSearchStudentId] = useState('');
+  const [searchCareer, setSearchCareer] = useState('');
 
   const [advisees, setAdviseesData] = useState([
     {
@@ -60,6 +60,12 @@ const Advisees = () => {
       Gender: 'Masculino',
     },
     {
+      Name: 'Isaac Espinoza Morales',
+      Enrollment: '193535',
+      DegreeIdentity: 'LM',
+      Gender: 'Masculino',
+    },
+    {
       Name: 'Sofía Isabel Martínez Paredes',
       Enrollment: '213456',
       DegreeIdentity: 'LA',
@@ -79,7 +85,17 @@ const Advisees = () => {
     },
   ]);
 
-  const filteredAdvisees = advisees.filter((advisee) => advisee.Name.toLowerCase().includes(searchName.toLowerCase()) && advisee.DegreeIdentity.toLowerCase().includes(searchStudentId.toLowerCase()) && advisee.Enrollment.toLowerCase().includes(searchCareer.toLowerCase()));
+  const filteredAdvisees = advisees.filter((advisee) => {
+    const regexName = new RegExp(searchName, 'i');
+    const regexStudentId = new RegExp(searchStudentId, 'i');
+    const regexCareer = new RegExp(searchCareer, 'i');
+
+    return (
+      (!searchName || regexName.test(advisee.Name)) &&
+      (!searchStudentId || regexStudentId.test(advisee.Enrollment)) &&
+      (!searchCareer || regexCareer.test(advisee.DegreeIdentity))
+    );
+  });
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
@@ -92,30 +108,45 @@ const Advisees = () => {
         <Col xs={12} lg={8} className="d-flex my-2">
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon1">
-              {' '}
               <BsPersonBadgeFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Nombre(s)" aria-label="Nombre(s)" value={searchName} aria-describedby="basic-addon1" />
+            <Form.Control
+              placeholder="Nombre(s)"
+              aria-label="Nombre(s)"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              aria-describedby="basic-addon1"
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon2">
-              {' '}
               <BsPersonVcardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Matrícula" aria-label="Matrícula" value={searchStudentId} aria-describedby="basic-addon2" />
+            <Form.Control
+              placeholder="Matrícula"
+              aria-label="Matrícula"
+              value={searchStudentId}
+              onChange={(e) => setSearchStudentId(e.target.value)}
+              aria-describedby="basic-addon2"
+            />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon3">
-              {' '}
               <BsMortarboardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Carrera" aria-label="Carrera" value={searchCareer} aria-describedby="basic-addon3" />
+            <Form.Control
+              placeholder="Carrera"
+              aria-label="Carrera"
+              value={searchCareer}
+              onChange={(e) => setSearchCareer(e.target.value)}
+              aria-describedby="basic-addon3"
+            />
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button d-flex align-items-center justify-content-center me-1">
+          <Button className="button d-flex align-items-center justify-content-center me-1" onClick={() => { setSearchName(''); setSearchStudentId(''); setSearchCareer(''); }}>
             <BsXCircleFill className="me-1 fs-5" />
             Limpiar
           </Button>
