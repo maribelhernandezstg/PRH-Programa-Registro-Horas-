@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { environment } from '../environment/environment';
 import { LearningUnit } from '../shared/models/learning-unit.interface';
 
-const API_URL = process.env.API_URL + '/learningUnits';
+const API_URL = environment.API_URL + '/learningUnits';
 
 export const getAllLearningUnits = async (): Promise<LearningUnit[]> => {
   try {
@@ -13,9 +14,7 @@ export const getAllLearningUnits = async (): Promise<LearningUnit[]> => {
   }
 };
 
-export const getLearningUnitById = async (
-  id: number
-): Promise<LearningUnit> => {
+export const getLearningUnitById = async (id: number): Promise<LearningUnit> => {
   try {
     const response = await axios.get<LearningUnit>(`${API_URL}/${id}`);
     return response.data;
@@ -25,9 +24,7 @@ export const getLearningUnitById = async (
   }
 };
 
-export const createLearningUnit = async (
-  learningUnit: LearningUnit
-): Promise<LearningUnit> => {
+export const createLearningUnit = async (learningUnit: LearningUnit): Promise<LearningUnit> => {
   try {
     const response = await axios.post<LearningUnit>(`${API_URL}`, learningUnit);
     return response.data;
@@ -37,15 +34,9 @@ export const createLearningUnit = async (
   }
 };
 
-export const updateLearningUnit = async (
-  id: number,
-  learningUnit: Partial<LearningUnit>
-): Promise<LearningUnit> => {
+export const updateLearningUnit = async (id: number, learningUnit: Partial<LearningUnit>): Promise<LearningUnit> => {
   try {
-    const response = await axios.put<LearningUnit>(
-      `${API_URL}/${id}`,
-      learningUnit
-    );
+    const response = await axios.put<LearningUnit>(`${API_URL}/${id}`, learningUnit);
     return response.data;
   } catch (error) {
     console.error(`Error updating learning unit with ID ${id}:`, error);
@@ -53,16 +44,11 @@ export const updateLearningUnit = async (
   }
 };
 
-export const toggleLearningUnitActivation = async (
-  id: number
-): Promise<void> => {
+export const toggleLearningUnitActivation = async (id: number): Promise<void> => {
   try {
     await axios.get(`${API_URL}/active/${id}`);
   } catch (error) {
-    console.error(
-      `Error toggling activation status for learning unit with ID ${id}:`,
-      error
-    );
+    console.error(`Error toggling activation status for learning unit with ID ${id}:`, error);
     throw error;
   }
 };

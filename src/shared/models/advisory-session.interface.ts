@@ -1,11 +1,26 @@
 export interface AdvisorySession {
   Identity: number;
-  LearningUnitIdentity: number;
+  //------------------------------------------------
+  //Este dato me lo debe traer con mi LearningUnitIdentity
+  // LearningUnitIdentity: number;
+  LearningUnitIdentity: string;
+  //------------------------------------------------
   Topic: string;
   Professor: string;
   ClassType: string;
-  AdvisorIdentity: number;
-  AdviseeIdentity: number;
+  //------------------------------------------------
+  //Este dato me lo debe traer con mi AdvisorIdentity
+  // AdvisorIdentity: number;
+  AdvisorIdentity: string;
+  //------------------------------------------------
+  //Este dato me lo debe traer con mi AdviseeIdentity
+  //AdviseeIdentity: number;
+  AdviseeIdentity: string;
+  //------------------------------------------------
+  //Este dato me lo debe traer con mi AdviseeIdentity
+  //------------------------------------------------
+  AdviseeStudentId: string;
+  //------------------------------------------------
   SessionDate: Date;
   StartTime: Date;
   EndTime: Date;

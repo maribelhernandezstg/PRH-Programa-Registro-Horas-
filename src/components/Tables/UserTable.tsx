@@ -5,13 +5,13 @@ import { BsPencilSquare, BsXSquareFill, BsCheckCircle } from 'react-icons/bs';
 interface UserTableProps {
   DataSource: {
     Name: string;
-    Enrollment: string;
+    Enrollment: number;
     Active: boolean;
   }[];
-  toggleUserStatus: (enrollment: string) => void;
+  toggleUserStatus: (enrollment: number) => void;
 }
 
-const UserTable: React.FC<UserTableProps & { handleEditUser: (usuario: { Name: string; Enrollment: string; Active: boolean }) => void }> = ({ DataSource, toggleUserStatus, handleEditUser }) => {
+const UserTable: React.FC<UserTableProps & { handleEditUser: (usuario: { Name: string; Enrollment: number; Active: boolean }) => void }> = ({ DataSource, toggleUserStatus, handleEditUser }) => {
   return (
     <Table responsive striped bordered hover className="rounded-table text-center">
       <thead>

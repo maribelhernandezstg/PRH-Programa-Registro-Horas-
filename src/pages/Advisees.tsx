@@ -1,101 +1,81 @@
 import '../App.css';
-import { Container, Row, Button, InputGroup, Col, Form } from 'react-bootstrap';
-import { useState } from 'react';
+import { Container, Row, Button, InputGroup, Col, Form, Spinner } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
 
-import AdvisorTable from '../components/Tables/AdvisorTable';
+import AdviseeTable from '../components/Tables/AdviseeTable';
+import AdviseeModal from '../components/Modals/AdviseeModal';
+
+import { getAllAdviseesDummy } from '../services/advisee-service';
+import { Advisee } from '../shared/models/advisee.interface';
 
 const Advisees = () => {
+  // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
   const [searchStudentId, setSearchStudentId] = useState('');
   const [searchCareer, setSearchCareer] = useState('');
 
-  const [advisees, setAdviseesData] = useState([
-    {
-      Name: 'Edson Eduardo Salazar Muñoz',
-      Enrollment: '197215',
-      DegreeIdentity: 'LMAD',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Kevin Leonardo Sánchez Ortega',
-      Enrollment: '121212',
-      DegreeIdentity: 'LMAD',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'María Teresa López Castillo',
-      Enrollment: '193456',
-      DegreeIdentity: 'LSTI',
-      Gender: 'Femenino',
-    },
-    {
-      Name: 'Juan Manuel Pérez Torres',
-      Enrollment: '189874',
-      DegreeIdentity: 'LMAD',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Carla Alejandra Mendoza Ruiz',
-      Enrollment: '204567',
-      DegreeIdentity: 'LCC',
-      Gender: 'Femenino',
-    },
-    {
-      Name: 'Luis Fernando Torres Medina',
-      Enrollment: '176543',
-      DegreeIdentity: 'LCC',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Ana María González Díaz',
-      Enrollment: '215678',
-      DegreeIdentity: 'LF',
-      Gender: 'Femenino',
-    },
-    {
-      Name: 'Daniel Alejandro Ramírez Jiménez',
-      Enrollment: '198765',
-      DegreeIdentity: 'LM',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Isaac Espinoza Morales',
-      Enrollment: '193535',
-      DegreeIdentity: 'LM',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Sofía Isabel Martínez Paredes',
-      Enrollment: '213456',
-      DegreeIdentity: 'LA',
-      Gender: 'Femenino',
-    },
-    {
-      Name: 'Pedro Antonio Hernández López',
-      Enrollment: '175432',
-      DegreeIdentity: 'LM',
-      Gender: 'Masculino',
-    },
-    {
-      Name: 'Laura Patricia Silva Romero',
-      Enrollment: '209876',
-      DegreeIdentity: 'LF',
-      Gender: 'Femenino',
-    },
-  ]);
+  // Estado para manejar el loader
+  const [loadingAdvisees, setLoadingAdvisees] = useState(true);
 
+  // Estado para almacenar los asesores
+  const [advisees, setAdviseesData] = useState<Advisee[]>([]);
+
+  // Estado para controlar la visibilidad del modal
+  const [showAdviseeModal, setShowAdviseeModal] = useState(false);
+
+  // Funciones para mostrar y cerrar el modal
+  const handleShowAdviseeModal = () => setShowAdviseeModal(true);
+  const handleCloseAdviseeModal = () => setShowAdviseeModal(false);
+
+  // Valor inicial para una nuevo asesorado
+  const initialAdvisee: Advisee = {
+    Enrollment: 0,
+    Gender: '',
+    Name: '',
+    DegreeIdentity: '',
+    UserCreation: 0,
+    CreatedAt: new Date(0),
+    UserUpdate: 0,
+    UpdatedAt: new Date(0),
+    Active: false,
+  };
+
+  // Estado para manejar una nuevo asesorado y errores
+  const [newAdvisee, setNewAdvisee] = useState<Advisee>(initialAdvisee);
+  const [errors, setErrors] = useState<Advisee>(initialAdvisee);
+
+  // Filtra las asesorados según los criterios de búsqueda
   const filteredAdvisees = advisees.filter((advisee) => {
     const regexName = new RegExp(searchName, 'i');
     const regexStudentId = new RegExp(searchStudentId, 'i');
     const regexCareer = new RegExp(searchCareer, 'i');
 
-    return (
-      (!searchName || regexName.test(advisee.Name)) &&
-      (!searchStudentId || regexStudentId.test(advisee.Enrollment)) &&
-      (!searchCareer || regexCareer.test(advisee.DegreeIdentity))
-    );
+    return (!searchName || regexName.test(advisee.Name)) && (!searchStudentId || regexStudentId.test(advisee.Enrollment.toString())) && (!searchCareer || regexCareer.test(advisee.DegreeIdentity));
   });
+
+  // Maneja los cambios en los campos de entrada del nuevo asesorado
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewAdvisee({ ...newAdvisee, [name]: value });
+  };
+
+  // Efecto para cargar los asesorados al montar el componente
+  useEffect(() => {
+    const fetchAdvices = async () => {
+      setLoadingAdvisees(true);
+      try {
+        const data = await getAllAdviseesDummy(); // Obtiene los asesorados
+        setAdviseesData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error); // Manejo de errores
+      } finally {
+        setLoadingAdvisees(false); // Finaliza la carga
+      }
+    };
+
+    fetchAdvices();
+  }, []);
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
@@ -110,43 +90,31 @@ const Advisees = () => {
             <InputGroup.Text id="basic-addon1">
               <BsPersonBadgeFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control
-              placeholder="Nombre(s)"
-              aria-label="Nombre(s)"
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)}
-              aria-describedby="basic-addon1"
-            />
+            <Form.Control placeholder="Nombre(s)" aria-label="Nombre(s)" value={searchName} onChange={(e) => setSearchName(e.target.value)} aria-describedby="basic-addon1" />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon2">
               <BsPersonVcardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control
-              placeholder="Matrícula"
-              aria-label="Matrícula"
-              value={searchStudentId}
-              onChange={(e) => setSearchStudentId(e.target.value)}
-              aria-describedby="basic-addon2"
-            />
+            <Form.Control placeholder="Matrícula" aria-label="Matrícula" value={searchStudentId} onChange={(e) => setSearchStudentId(e.target.value)} aria-describedby="basic-addon2" />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon3">
               <BsMortarboardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control
-              placeholder="Carrera"
-              aria-label="Carrera"
-              value={searchCareer}
-              onChange={(e) => setSearchCareer(e.target.value)}
-              aria-describedby="basic-addon3"
-            />
+            <Form.Control placeholder="Carrera" aria-label="Carrera" value={searchCareer} onChange={(e) => setSearchCareer(e.target.value)} aria-describedby="basic-addon3" />
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button d-flex align-items-center justify-content-center me-1" onClick={() => { setSearchName(''); setSearchStudentId(''); setSearchCareer(''); }}>
+          <Button
+            className="button d-flex align-items-center justify-content-center me-1"
+            onClick={() => {
+              setSearchName('');
+              setSearchStudentId('');
+              setSearchCareer('');
+            }}>
             <BsXCircleFill className="me-1 fs-5" />
             Limpiar
           </Button>
@@ -158,16 +126,26 @@ const Advisees = () => {
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
         <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
-          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success">
+          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowAdviseeModal}>
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
         </Col>
         <Col xs={12} lg={12}>
           <Container>
-            <AdvisorTable DataSource={filteredAdvisees} />
+            {loadingAdvisees ? (
+              // Loader mientras se cargan las asesorías
+              <div className="text-center">
+                <Spinner animation="grow" />
+                <p>Cargando asesorados...</p>
+              </div>
+            ) : (
+              // Tabla de asesorados filtrados
+              <AdviseeTable DataSource={filteredAdvisees} />
+            )}
           </Container>
         </Col>
       </Row>
+      <AdviseeModal show={showAdviseeModal} handleClose={handleCloseAdviseeModal} />
     </Container>
   );
 };

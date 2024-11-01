@@ -6,7 +6,7 @@ interface UserModalProps {
   show: boolean;
   handleClose: () => void;
   handleSaveChanges: () => void;
-  user: { Name: string; Enrollment: string; Active: boolean };
+  user: { Name: string; Enrollment: number; Active: boolean };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errors: { Name: string; Enrollment: string };
 }

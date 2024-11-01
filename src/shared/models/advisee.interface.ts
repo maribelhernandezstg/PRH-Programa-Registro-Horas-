@@ -1,11 +1,14 @@
 export interface Advisee {
-    Enrollment: number;
-    Gender: string;
-    Name: string;
-    DegreeIdentity: number;
-    UserCreation: number;
-    CreatedAt: Date;
-    UserUpdate: number;
-    UpdatedAt: Date;
-    Active: boolean;
+  Enrollment: number;
+  Gender: string;
+  Name: string;
+  //Este dato me lo debe traer con mi DegreeIdentity
+  // DegreeIdentity: number;
+  DegreeIdentity: string;
+  //------------------------------------------------
+  UserCreation: number;
+  CreatedAt: Date;
+  UserUpdate: number;
+  UpdatedAt: Date;
+  Active: boolean;
 }

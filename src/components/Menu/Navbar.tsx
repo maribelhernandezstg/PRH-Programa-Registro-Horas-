@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, Row, Col, Button, Navbar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import AdvicesDepartmentIcon from '../../assets/AsesoriasIcon.jpeg';
-import { BsPersonBadge, BsPersonVideo3, BsPersonVcard, BsBarChart, BsFileArrowUp, BsList, BsPersonPlus } from 'react-icons/bs';
+import { BsPersonBadge, BsPersonVideo3, BsPersonVcard, BsBarChart, BsFileArrowUp, BsList, BsPersonFill } from 'react-icons/bs';
 import './Navbar.css';
 
 const CustomNavbar = () => {
@@ -63,8 +63,8 @@ const CustomNavbar = () => {
             </Link>
             <Link to="/usuarios" className="d-flex align-items-center justify-content-center custom-button mx-1">
               <Button variant="outline-light">
-                <BsPersonPlus className="me-1 fs-4" />
-                Agregar
+                <BsPersonFill className="me-1 fs-4" />
+                Usuarios
               </Button>
             </Link>
           </Col>

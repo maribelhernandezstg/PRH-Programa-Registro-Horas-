@@ -1,43 +1,57 @@
 import '../App.css';
-import { useState } from 'react';
-import { Container, Row, Col, Button, InputGroup, Form } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, InputGroup, Form, Spinner } from 'react-bootstrap';
 import { BsPersonVcardFill, BsXCircleFill, BsPersonBadgeFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
 
 import UserTable from '../components/Tables/UserTable';
 import UserModal from '../components/Modals/UserModal';
 import '../components/tables/Styles.css';
+import { getAllUsersDummy } from '../services/user-service';
+import { User } from '../shared/models/user.interface';
 
 const Users = () => {
+  // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
   const [searchUserId, setSearchUserId] = useState('');
 
-  const toggleUserStatus = (enrollment: string) => {
-    setRegistrosUsuarios((prev) => prev.map((registro) => (registro.Enrollment === enrollment ? { ...registro, Active: !registro.Active } : registro)));
+  // Estado para manejar el loader
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
+  // Estado para almacenar los usuarios
+  const [users, setUsersData] = useState<User[]>([]);
+
+  // Estado para controlar el estado de los usuarios
+  const toggleUserStatus = (enrollment: number) => {
+    setUsersData((prev) => prev.map((registro) => (registro.Enrollment === enrollment ? { ...registro, Active: !registro.Active } : registro)));
   };
 
-  const [registrosUsuarios, setRegistrosUsuarios] = useState([
-    { Name: 'Edson Eduardo González Martínez', Enrollment: '197215', Active: true },
-    { Name: 'Kevin Alejandro Sánchez López', Enrollment: '121212', Active: true },
-    { Name: 'María Fernanda López Rodríguez', Enrollment: '201234', Active: true },
-    { Name: 'Juan Carlos Pérez Jiménez', Enrollment: '198765', Active: true },
-    { Name: 'Claudia Patricia Fernández Ruiz', Enrollment: '202345', Active: false },
-    { Name: 'Luis Enrique Torres Morales', Enrollment: '199876', Active: true },
-    { Name: 'Ana Isabel Martínez Paredes', Enrollment: '207654', Active: false },
-    { Name: 'Daniel Antonio Ramírez Castillo', Enrollment: '210987', Active: false },
-    { Name: 'Sofia Gabriela González Méndez', Enrollment: '215432', Active: true },
-    { Name: 'Pedro José Hernández Ortega', Enrollment: '205678', Active: true },
-    { Name: 'Laura Alejandra Silva Gutiérrez', Enrollment: '218765', Active: false },
-  ]);
+  // Estado para controlar la visibilidad del modal
+  const [showUserModal, setShowUserModal] = useState(false);
 
-  const [show, setShow] = useState(false);
-  const [newUser, setNewUser] = useState({
+  // Valor inicial para un nuevo usuario
+  const initialUser: User = {
+    Enrollment: 0,
     Name: '',
-    Enrollment: '',
-    Active: true,
-  });
+    Password: '',
+    Type: 0,
+    UserCreation: 0,
+    CreatedAt: new Date(),
+    UserUpdate: 0,
+    UpdatedAt: new Date(),
+    Active: false,
+  };
 
-  const [editUser, setEditUser] = useState<{ Name: string; Enrollment: string; Active: boolean } | null>(null);
+  // Funciones para mostrar y cerrar el modal
+  const handleShowUserModal = () => setShowUserModal(true);
+  const handleCloseUserModal = () => {
+    setShowUserModal(false);
+    setNewUser(initialUser); // Reiniciar al cerrar
+    setEditUser(initialUser); // Reiniciar el usuario editado
+  };
 
+  // Estado para manejar una nuevo usuario, editar usuario y errores
+  const [newUser, setNewUser] = useState<User>(initialUser);
+  const [editUser, setEditUser] = useState<User>(initialUser);
   const [errors, setErrors] = useState({ Name: '', Enrollment: '' });
 
   // Manejar el cambio en el formulario del modal
@@ -49,18 +63,17 @@ const Users = () => {
     }));
   };
 
-  const handleEditUser = (usuario: { Name: string; Enrollment: string; Active: boolean }) => {
-    setEditUser(usuario);
-    setNewUser(usuario); // Esto debería cargar la información en el formulario
-    handleShow(); // Mostrar el modal
-  };
-
-  const handleShow = () => setShow(true);
-
-  const handleClose = () => {
-    setShow(false);
-    setNewUser({ Name: '', Enrollment: '', Active: true }); // Reiniciar al cerrar
-    setEditUser(null); // Reiniciar el usuario editado
+  const handleEditUser = (usuario: { Name: string; Enrollment: number; Active: boolean }) => {
+    const updatedUser: User = {
+      ...editUser,
+      Name: usuario.Name,
+      Enrollment: usuario.Enrollment,
+      Active: usuario.Active,
+      UpdatedAt: new Date(),
+    };
+    setEditUser(updatedUser);
+    setNewUser(updatedUser); // Esto debería cargar la información en el formulario
+    handleShowUserModal(); // Mostrar el modal
   };
 
   const handleSaveChanges = () => {
@@ -76,19 +89,36 @@ const Users = () => {
     }
 
     if (editUser) {
-      setRegistrosUsuarios((prev) => prev.map((registro) => (registro.Enrollment === editUser.Enrollment ? newUser : registro)));
+      setUsersData((prev) => prev.map((registro) => (registro.Enrollment === editUser.Enrollment ? newUser : registro)));
     } else {
-      setRegistrosUsuarios((prev) => [...prev, newUser]);
+      setUsersData((prev) => [...prev, newUser]);
     }
 
-    handleClose();
+    handleCloseUserModal();
   };
   // Filtrar registros
-  const filteredRegistros = registrosUsuarios.filter((registro) => registro.Name.toLowerCase().includes(searchName.toLowerCase()) && registro.Enrollment.toLowerCase().includes(searchUserId.toLowerCase()));
+  const filteredRegistros = users.filter((registro) => registro.Name.toLowerCase().includes(searchName.toLowerCase()) && registro.Enrollment.toString().includes(searchUserId.toLowerCase()));
+
+  // Efecto para cargar las asesorías al montar el componente
+  useEffect(() => {
+    const fetchAdvices = async () => {
+      setLoadingUsers(true);
+      try {
+        const data = await getAllUsersDummy(); // Obtiene los usuarios
+        setUsersData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error); // Manejo de errores
+      } finally {
+        setLoadingUsers(false); // Finaliza la carga
+      }
+    };
+
+    fetchAdvices();
+  }, []);
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
-      <UserModal show={show} handleClose={handleClose} handleSaveChanges={handleSaveChanges} user={newUser} handleInputChange={handleInputChange} errors={errors} />
+      <UserModal show={showUserModal} handleClose={handleCloseUserModal} handleSaveChanges={handleSaveChanges} user={newUser} handleInputChange={handleInputChange} errors={errors} />
 
       <Row className="px-2 py-1">
         <Col xs={10} lg={8}>
@@ -123,14 +153,23 @@ const Users = () => {
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
         <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
-          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShow}>
+          <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowUserModal}>
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
         </Col>
         <Col xs={12} lg={12}>
-          <div className="table-container">
-            <UserTable DataSource={filteredRegistros} toggleUserStatus={toggleUserStatus} handleEditUser={handleEditUser} />
-          </div>
+          <Container>
+            {loadingUsers ? (
+              // Loader mientras se cargan los usuarios
+              <div className="text-center">
+                <Spinner animation="grow" />
+                <p>Cargando usuarios...</p>
+              </div>
+            ) : (
+              // Tabla de usuarios filtrados
+              <UserTable DataSource={filteredRegistros} toggleUserStatus={toggleUserStatus} handleEditUser={handleEditUser} />
+            )}
+          </Container>
         </Col>
       </Row>
     </Container>
