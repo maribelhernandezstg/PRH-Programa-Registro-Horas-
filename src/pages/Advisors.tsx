@@ -8,7 +8,9 @@ import ClockInModal from '../components/Modals/AdvisorClockIn';
 import AdvisorModal from '../components/Modals/AdvisorModal';
 
 import { getAllAdvisorsDummy } from '../services/advisor-service';
-import { Advisor } from '../shared/models/advisor.interface';
+
+import { Advisor } from '../shared/models/advisor.class';
+import { AdvisorErrors } from '../shared/forms-errors/advisor-error.class';
 
 const Advisors = () => {
   // Estados para manejar los filtros de búsqueda
@@ -34,22 +36,31 @@ const Advisors = () => {
   const handleShowAdvisorModal = () => setShowAdvisorModal(true);
   const handleCloseAdvisorModal = () => setShowAdvisorModal(false);
 
-  // Valor inicial para una nuevo asesorado
-  const initialAdvisor: Advisor = {
-    Enrollment: 0,
-    Gender: '',
-    Name: '',
-    DegreeIdentity: '',
-    UserCreation: 0,
-    CreatedAt: new Date(0),
-    UserUpdate: 0,
-    UpdatedAt: new Date(0),
-    Active: false,
+  // Estado para manejar una nuevo asesor y errores
+  const [newAdvisor, setNewAdvisor] = useState<Advisor>(new Advisor());
+  const [errors, setErrors] = useState<AdvisorErrors>(new AdvisorErrors());
+
+  // Maneja la acción de guardar los cambios de la nueva asesoría
+  const handleSaveChanges = () => {
+    // Valida los campos y establece errores si es necesario
+    const newErrors = new AdvisorErrors(!newAdvisor.Enrollment ? 'Campo requerido' : '', !newAdvisor.Gender ? 'Campo requerido' : '', !newAdvisor.Name ? 'Campo requerido' : '', !newAdvisor.DegreeIdentity ? 'Campo requerido' : '');
+
+    setErrors(newErrors);
+
+    // Si no hay errores, guarda el nuevo asesorado
+    if (Object.values(newErrors).every((error) => error === '')) {
+      // Actualiza el estado de asesorados y cierra el modal
+      setAdvisorsData([...advisors, newAdvisor]);
+      setNewAdvisor(new Advisor());
+      handleCloseAdvisorModal();
+    }
   };
 
-  // Estado para manejar una nuevo asesor y errores
-  const [newAdvisor, setNewAdvisor] = useState<Advisor>(initialAdvisor);
-  const [errors, setErrors] = useState<Advisor>(initialAdvisor);
+  // Maneja los cambios en los campos de entrada del nuevo asesorado
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewAdvisor({ ...newAdvisor, [name]: value });
+  };
 
   // Filtra las asesorados según los criterios de búsqueda
   const filteredAdvisors = advisors.filter((advisor) => {
@@ -59,12 +70,6 @@ const Advisors = () => {
 
     return (!searchName || regexName.test(advisor.Name)) && (!searchStudentId || regexStudentId.test(advisor.Enrollment.toString())) && (!searchCareer || regexCareer.test(advisor.DegreeIdentity));
   });
-
-  // Maneja los cambios en los campos de entrada del nuevo asesor
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewAdvisor({ ...newAdvisor, [name]: value });
-  };
 
   // Efecto para cargar los asesores al montar el componente
   useEffect(() => {
@@ -158,7 +163,7 @@ const Advisors = () => {
       </Row>
       {/* Modal para fichar */}
       <ClockInModal show={showClockInModal} handleClose={handleCloseClockInModal} />
-      <AdvisorModal show={showAdvisorModal} handleClose={handleCloseAdvisorModal} />
+      <AdvisorModal show={showAdvisorModal} handleClose={handleCloseAdvisorModal} handleSaveChanges={handleSaveChanges} advisor={newAdvisor} handleInputChange={handleInputChange} errors={errors} />
     </Container>
   );
 };

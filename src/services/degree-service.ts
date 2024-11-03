@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { environment } from '../environment/environment';
-import { Degree } from '../shared/models/degree.interface';
+import { Degree } from '../shared/models/degree.class';
 
 const API_URL = environment.API_URL + '/degrees';
 

@@ -7,7 +7,9 @@ import AdviseeTable from '../components/Tables/AdviseeTable';
 import AdviseeModal from '../components/Modals/AdviseeModal';
 
 import { getAllAdviseesDummy } from '../services/advisee-service';
-import { Advisee } from '../shared/models/advisee.interface';
+
+import { Advisee } from '../shared/models/advisee.class';
+import { AdviseeErrors } from '../shared/forms-errors/advisee-error.class';
 
 const Advisees = () => {
   // Estados para manejar los filtros de búsqueda
@@ -28,22 +30,31 @@ const Advisees = () => {
   const handleShowAdviseeModal = () => setShowAdviseeModal(true);
   const handleCloseAdviseeModal = () => setShowAdviseeModal(false);
 
-  // Valor inicial para una nuevo asesorado
-  const initialAdvisee: Advisee = {
-    Enrollment: 0,
-    Gender: '',
-    Name: '',
-    DegreeIdentity: '',
-    UserCreation: 0,
-    CreatedAt: new Date(0),
-    UserUpdate: 0,
-    UpdatedAt: new Date(0),
-    Active: false,
+  // Estado para manejar una nuevo asesorado y errores
+  const [newAdvisee, setNewAdvisee] = useState<Advisee>(new Advisee());
+  const [errors, setErrors] = useState<AdviseeErrors>(new AdviseeErrors());
+
+  // Maneja la acción de guardar los cambios de la nueva asesoría
+  const handleSaveChanges = () => {
+    // Valida los campos y establece errores si es necesario
+    const newErrors = new AdviseeErrors(!newAdvisee.Enrollment ? 'Campo requerido' : '', !newAdvisee.Gender ? 'Campo requerido' : '', !newAdvisee.Name ? 'Campo requerido' : '', !newAdvisee.DegreeIdentity ? 'Campo requerido' : '');
+
+    setErrors(newErrors);
+
+    // Si no hay errores, guarda el nuevo asesorado
+    if (Object.values(newErrors).every((error) => error === '')) {
+      // Actualiza el estado de asesorados y cierra el modal
+      setAdviseesData([...advisees, newAdvisee]);
+      setNewAdvisee(new Advisee());
+      handleCloseAdviseeModal();
+    }
   };
 
-  // Estado para manejar una nuevo asesorado y errores
-  const [newAdvisee, setNewAdvisee] = useState<Advisee>(initialAdvisee);
-  const [errors, setErrors] = useState<Advisee>(initialAdvisee);
+  // Maneja los cambios en los campos de entrada del nuevo asesorado
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setNewAdvisee({ ...newAdvisee, [name]: value });
+  };
 
   // Filtra las asesorados según los criterios de búsqueda
   const filteredAdvisees = advisees.filter((advisee) => {
@@ -53,12 +64,6 @@ const Advisees = () => {
 
     return (!searchName || regexName.test(advisee.Name)) && (!searchStudentId || regexStudentId.test(advisee.Enrollment.toString())) && (!searchCareer || regexCareer.test(advisee.DegreeIdentity));
   });
-
-  // Maneja los cambios en los campos de entrada del nuevo asesorado
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewAdvisee({ ...newAdvisee, [name]: value });
-  };
 
   // Efecto para cargar los asesorados al montar el componente
   useEffect(() => {
@@ -88,14 +93,14 @@ const Advisees = () => {
         <Col xs={12} lg={8} className="d-flex my-2">
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon1">
-              <BsPersonBadgeFill className="fs-5" />
+              <BsPersonVcardFill className="fs-5" />
             </InputGroup.Text>
             <Form.Control placeholder="Nombre(s)" aria-label="Nombre(s)" value={searchName} onChange={(e) => setSearchName(e.target.value)} aria-describedby="basic-addon1" />
           </InputGroup>
 
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon2">
-              <BsPersonVcardFill className="fs-5" />
+              <BsPersonBadgeFill className="fs-5" />
             </InputGroup.Text>
             <Form.Control placeholder="Matrícula" aria-label="Matrícula" value={searchStudentId} onChange={(e) => setSearchStudentId(e.target.value)} aria-describedby="basic-addon2" />
           </InputGroup>
@@ -145,7 +150,7 @@ const Advisees = () => {
           </Container>
         </Col>
       </Row>
-      <AdviseeModal show={showAdviseeModal} handleClose={handleCloseAdviseeModal} />
+      <AdviseeModal show={showAdviseeModal} handleClose={handleCloseAdviseeModal} handleSaveChanges={handleSaveChanges} advisee={newAdvisee} handleInputChange={handleInputChange} errors={errors} />
     </Container>
   );
 };

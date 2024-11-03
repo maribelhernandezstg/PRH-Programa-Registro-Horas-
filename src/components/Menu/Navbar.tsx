@@ -17,7 +17,7 @@ const CustomNavbar = () => {
       <Container fluid className="navbar-bar text-white justify-content-center">
         <Row className="w-75">
           <Col xs={10} lg={4} className="d-flex">
-            <Link to="/" className="justify-content-center align-items-center me-4 logo-container">
+            <Link to="/home" className="justify-content-center align-items-center me-4 logo-container">
               <img src={AdvicesDepartmentIcon} alt="Icon" className="rounded logo-icon" />
 
               <div className="logo-text fw-bold fs-4 text-center">ASESORÍAS FCFM</div>

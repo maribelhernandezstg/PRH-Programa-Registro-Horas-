@@ -10,8 +10,8 @@ import Users from '../pages/Users';
 
 const AppRouter = () => (
   <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/login" element={<Login />} />
+    <Route path="/home" element={<Home />} />
+    <Route path="/" element={<Login />} />
     <Route path="/usuarios" element={<Users />} />
     <Route path="/excel" element={<Excel />} />
     <Route path="/asesores" element={<Asesores />} />

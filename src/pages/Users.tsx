@@ -7,7 +7,7 @@ import UserTable from '../components/Tables/UserTable';
 import UserModal from '../components/Modals/UserModal';
 import '../components/tables/Styles.css';
 import { getAllUsersDummy } from '../services/user-service';
-import { User } from '../shared/models/user.interface';
+import { User } from '../shared/models/user.class';
 
 const Users = () => {
   // Estados para manejar los filtros de búsqueda

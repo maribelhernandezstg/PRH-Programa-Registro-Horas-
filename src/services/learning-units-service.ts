@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { environment } from '../environment/environment';
-import { LearningUnit } from '../shared/models/learning-unit.interface';
+import { LearningUnit } from '../shared/models/learning-unit.class';
 
 const API_URL = environment.API_URL + '/learningUnits';
 

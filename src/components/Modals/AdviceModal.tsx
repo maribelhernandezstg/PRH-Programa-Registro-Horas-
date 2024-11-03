@@ -1,7 +1,8 @@
 import React from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { BsPerson, BsBook, BsPersonBadge, BsFillCalendarDateFill, BsClock, BsXCircle, BsCheckCircle } from 'react-icons/bs';
-import { AdvisorySession } from '../../shared/models/advisory-session.interface';
+import { AdvisorySession } from '../../shared/models/advisory-session.class';
+import { AdvisorySessionErrors } from '../../shared/forms-errors/advisory-session-error.class';
 
 interface AdviceModalProps {
   show: boolean;
@@ -9,7 +10,7 @@ interface AdviceModalProps {
   handleSaveChanges: () => void;
   advice: AdvisorySession;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  errors: AdvisorySession;
+  errors: AdvisorySessionErrors;
 }
 
 const AdviceModal: React.FC<AdviceModalProps> = ({ show, handleClose, handleSaveChanges, advice, handleInputChange, errors }) => {
@@ -82,7 +83,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({ show, handleClose, handleSave
                 <BsClock className="fs-5" />
               </InputGroup.Text>
               <Form.Control type="time" name="StartTime" value={advice.StartTime.toDateString()} onChange={handleInputChange} required isInvalid={!!errors.StartTime} />
-              <Form.Control.Feedback type="invalid">{errors.StartTime.toDateString()}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.StartTime}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -93,7 +94,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({ show, handleClose, handleSave
                 <BsClock className="fs-5" />
               </InputGroup.Text>
               <Form.Control type="time" name="EndTime" value={advice.EndTime.toDateString()} onChange={handleInputChange} required isInvalid={!!errors.EndTime} />
-              <Form.Control.Feedback type="invalid">{errors.EndTime.toDateString()}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.EndTime}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
         </Form>

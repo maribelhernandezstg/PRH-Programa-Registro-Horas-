@@ -7,7 +7,8 @@ import AdviceTable from '../components/Tables/AdviceTable'; // Componente para m
 import AdviceModal from '../components/Modals/AdviceModal'; // Componente modal para añadir/editar asesorías
 
 import { getAllAdvisorySessionsDummy } from '../services/advisory-session-service'; // Servicios de las asesorias
-import { AdvisorySession } from '../shared/models/advisory-session.interface'; // Interfaz para el modelo de sesión de asesoría
+import { AdvisorySession } from '../shared/models/advisory-session.class'; // Interfaz para el modelo de sesión de asesoría
+import { AdvisorySessionErrors } from '../shared/forms-errors/advisory-session-error.class';
 
 const Advices = () => {
   // Estados para manejar los filtros de búsqueda
@@ -28,29 +29,13 @@ const Advices = () => {
   const handleShowAdviceModal = () => setShowAdviceModal(true);
   const handleCloseAdviceModal = () => setShowAdviceModal(false);
 
-  // Valor inicial para una nueva sesión de asesoría
-  const initialAdvice: AdvisorySession = {
-    Identity: 0,
-    LearningUnitIdentity: '',
-    Topic: '',
-    Professor: '',
-    ClassType: '',
-    AdvisorIdentity: '',
-    AdviseeStudentId: '',
-    AdviseeIdentity: '',
-    SessionDate: new Date(),
-    StartTime: new Date(),
-    EndTime: new Date(),
-    UserCreation: 0,
-    CreatedAt: new Date(),
-    UserUpdate: 0,
-    UpdatedAt: new Date(),
-    Active: false,
-  };
+  // Valor inicial para una nueva sesión de asesoría y errores
+  const initialAdvice = new AdvisorySession();
+  const initialErrors = new AdvisorySessionErrors();
 
   // Estado para manejar una nueva asesoría y errores
   const [newAdvice, setNewAdvice] = useState<AdvisorySession>(initialAdvice);
-  const [errors, setErrors] = useState<AdvisorySession>(initialAdvice);
+  const [errors, setErrors] = useState<AdvisorySessionErrors>(initialErrors);
 
   // Filtra las asesorías según los criterios de búsqueda
   const filteredAdvices = advices.filter((advice) => {
@@ -70,7 +55,6 @@ const Advices = () => {
   const handleSaveChanges = () => {
     // Valida los campos y establece errores si es necesario
     const newErrors = {
-      ...newAdvice,
       AdvisorIdentity: newAdvice.AdvisorIdentity ? '' : 'Campo requerido',
       AdviseeIdentity: newAdvice.AdviseeIdentity ? '' : 'Campo requerido',
       AdviseeStudentId: newAdvice.AdviseeStudentId ? '' : 'Campo requerido',
