@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { BsPencilSquare, BsXSquareFill } from 'react-icons/bs';
 
-interface AdvisorTableProps {
+interface AdviseeTableProps {
   DataSource: {
     Name: string;
     Enrollment: number;
@@ -11,7 +11,7 @@ interface AdvisorTableProps {
   }[];
 }
 
-const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource }) => {
+const AdviseeTable: React.FC<AdviseeTableProps> = ({ DataSource }) => {
   return (
     <Table responsive striped bordered hover className="rounded-table text-center">
       <thead>
@@ -44,7 +44,7 @@ const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource }) => {
         ) : (
           <tr>
             <td colSpan={5} className="fs-5 text-center">
-              No se encontraron asesores
+              No se encontraron asesorados
             </td>
           </tr>
         )}
@@ -53,4 +53,4 @@ const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource }) => {
   );
 };
 
-export default AdvisorTable;
+export default AdviseeTable;

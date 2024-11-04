@@ -3,7 +3,7 @@ import AdvicesDepartmentImage from '../assets/Asesorias1.jpeg';
 
 const Home = () => {
   return (
-    <Container>
+    <Container style={{ height: '100vh' }}>
       <Row className="mt-4 d-flex allign-items-center justify-content-center">
         <Col xs={12} md={8}>
           <div className="fs-2 fw-bold text-start">Bienvenido al Sistema de Registro de Horas</div>

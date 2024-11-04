@@ -1,7 +1,9 @@
 import axios from 'axios';
-import { User } from '../shared/models/user.interface';
+import { environment } from '../environment/environment';
+import { User } from '../shared/models/user.class';
+import { dummyUsers } from '../shared/mocks/users';
 
-const API_URL = process.env.API_URL + '/users';
+const API_URL = environment.API_URL + '/users';
 
 export const getAllUsers = async (): Promise<User[]> => {
   try {
@@ -13,10 +15,15 @@ export const getAllUsers = async (): Promise<User[]> => {
   }
 };
 
-export const logIn = async (
-  enrollment: number,
-  password: string
-): Promise<User> => {
+export const getAllUsersDummy = async (): Promise<User[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(dummyUsers);
+    }, 1500);
+  });
+};
+
+export const logIn = async (enrollment: number, password: string): Promise<User> => {
   try {
     const response = await axios.post<User>(`${API_URL}/login`, {
       enrollment,
@@ -39,10 +46,7 @@ export const register = async (user: User): Promise<User> => {
   }
 };
 
-export const updateUser = async (
-  enrollment: number,
-  user: Partial<User>
-): Promise<User> => {
+export const updateUser = async (enrollment: number, user: Partial<User>): Promise<User> => {
   try {
     const response = await axios.put<User>(`${API_URL}/${enrollment}`, user);
     return response.data;
@@ -52,16 +56,11 @@ export const updateUser = async (
   }
 };
 
-export const toggleUserActivation = async (
-  enrollment: number
-): Promise<void> => {
+export const toggleUserActivation = async (enrollment: number): Promise<void> => {
   try {
     await axios.get(`${API_URL}/active/${enrollment}`);
   } catch (error) {
-    console.error(
-      `Error toggling activation status for user with enrollment ${enrollment}:`,
-      error
-    );
+    console.error(`Error toggling activation status for user with enrollment ${enrollment}:`, error);
     throw error;
   }
 };

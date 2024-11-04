@@ -16,7 +16,7 @@ function App() {
 
 function NavbarWrapper() {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/login';
+  const isLoginPage = location.pathname === '/';
   return <>{!isLoginPage && <CustomNavbar />}</>;
 }
 

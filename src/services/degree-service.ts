@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { Degree } from '../shared/models/degree.interface';
+import { environment } from '../environment/environment';
+import { Degree } from '../shared/models/degree.class';
 
-const API_URL = process.env.API_URL + '/degrees';
+const API_URL = environment.API_URL + '/degrees';
 
 export const getDegrees = async (): Promise<Degree[]> => {
   try {
@@ -33,10 +34,7 @@ export const createDegree = async (degree: Degree): Promise<Degree> => {
   }
 };
 
-export const updateDegree = async (
-  id: number,
-  degree: Partial<Degree>
-): Promise<Degree> => {
+export const updateDegree = async (id: number, degree: Partial<Degree>): Promise<Degree> => {
   try {
     const response = await axios.put<Degree>(`${API_URL}/${id}`, degree);
     return response.data;
@@ -50,10 +48,7 @@ export const toggleDegreeActivation = async (id: number): Promise<void> => {
   try {
     await axios.get(`${API_URL}/active/${id}`);
   } catch (error) {
-    console.error(
-      `Error toggling activation status for degree with ID ${id}:`,
-      error
-    );
+    console.error(`Error toggling activation status for degree with ID ${id}:`, error);
     throw error;
   }
 };

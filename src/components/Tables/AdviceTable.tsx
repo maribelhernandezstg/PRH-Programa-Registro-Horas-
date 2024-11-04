@@ -16,7 +16,7 @@ interface AdviceTableProps {
 
 const AdviceTable: React.FC<AdviceTableProps> = ({ DataSource }) => {
   return (
-    <Table striped bordered hover className="mt-4 rounded-table text-center">
+    <Table responsive striped bordered hover className="rounded-table text-center">
       <thead>
         <tr>
           <th className="text-center">Asesorado</th>
@@ -32,28 +32,27 @@ const AdviceTable: React.FC<AdviceTableProps> = ({ DataSource }) => {
       <tbody>
         {DataSource.length > 0 ? (
           DataSource.map((registro, index) => (
-            <tr key={index}>
-              <td>{registro.AdviseeIdentity}</td>
-              <td>{registro.AdviseeStudentId}</td>
-              <td>{registro.LearningUnitIdentity}</td>
-              <td>{registro.Topic}</td>
-              <td>{registro.StartTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-              <td>{registro.EndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-              <td>{registro.AdvisorIdentity}</td>
-              <td>
+            <tr key={index} className="text-break align-middle">
+              <td style={{ minWidth: 120, maxWidth: 165, height: 65 }}>{registro.AdviseeIdentity}</td>
+              <td style={{ minWidth: 100 }}>{registro.AdviseeStudentId}</td>
+              <td style={{ minWidth: 110, maxWidth: 145 }}>{registro.LearningUnitIdentity}</td>
+              <td style={{ minWidth: 100, maxWidth: 145 }}>{registro.Topic}</td>
+              <td style={{ minWidth: 100 }}>{registro.StartTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+              <td style={{ minWidth: 100 }}>{registro.EndTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+              <td style={{ minWidth: 120, maxWidth: 165 }}>{registro.AdvisorIdentity}</td>
+              <td style={{ minWidth: 125 }}>
                 <Button className="button">
-                  <BsPencilSquare className="fs-5 me-1"></BsPencilSquare>Editar
+                  <BsPencilSquare className="fs-6"></BsPencilSquare>
                 </Button>{' '}
                 <Button className="buttonRed">
-                  <BsXSquareFill className="fs-5 me-1"></BsXSquareFill>
-                  Borrar
+                  <BsXSquareFill className="fs-6"></BsXSquareFill>
                 </Button>
               </td>
             </tr>
           ))
         ) : (
           <tr>
-            <td colSpan={5} className="text-center">
+            <td colSpan={8} className="fs-5 text-center">
               No se encontraron asesorías
             </td>
           </tr>
