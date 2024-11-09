@@ -1,26 +1,17 @@
+import { Degree } from './degree.class';
+
 export class Advisee {
   Enrollment: number;
   Gender: string;
   Name: string;
-  //Este dato me lo debe traer con mi DegreeIdentity
-  // DegreeIdentity: number;
-  DegreeIdentity: string;
+  DegreeIdentity: number;
+  degree: Degree;
   //------------------------------------------------
-  UserCreation: number;
-  CreatedAt: Date;
-  UserUpdate: number;
-  UpdatedAt: Date;
-  Active: boolean;
-
-  constructor(Enrollment: number = 0, Gender: string = '', Name: string = '', DegreeIdentity: string = '', UserCreation: number = 0, CreatedAt: Date = new Date(), UserUpdate: number = 0, UpdatedAt: Date = new Date(), Active: boolean = true) {
+  constructor(Enrollment: number = 0, Gender: string = '', Name: string = '', DegreeIdentity: number = 0, degree: any = {}) {
     this.Enrollment = Enrollment;
     this.Gender = Gender;
+    this.degree = degree;
     this.Name = Name;
     this.DegreeIdentity = DegreeIdentity;
-    this.UserCreation = UserCreation;
-    this.CreatedAt = CreatedAt;
-    this.UserUpdate = UserUpdate;
-    this.UpdatedAt = UpdatedAt;
-    this.Active = Active;
   }
 }

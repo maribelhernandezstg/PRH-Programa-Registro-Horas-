@@ -6,10 +6,13 @@ import { BsPersonVcardFill, BsXCircleFill, BsPersonBadgeFill, BsPersonAdd, BsSea
 import UserTable from '../components/Tables/UserTable';
 import UserModal from '../components/Modals/UserModal';
 import '../components/tables/Styles.css';
-import { getAllUsersDummy } from '../services/user-service';
+import { UserService } from '../services/user-service';
 import { User } from '../shared/models/user.class';
 
 const Users = () => {
+  //Instancia de mi servicio
+  const userService = new UserService();
+
   // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
   const [searchUserId, setSearchUserId] = useState('');
@@ -99,12 +102,12 @@ const Users = () => {
   // Filtrar registros
   const filteredRegistros = users.filter((registro) => registro.Name.toLowerCase().includes(searchName.toLowerCase()) && registro.Enrollment.toString().includes(searchUserId.toLowerCase()));
 
-  // Efecto para cargar las asesorías al montar el componente
+  // Cargar las asesorías al montar el componente
   useEffect(() => {
     const fetchAdvices = async () => {
       setLoadingUsers(true);
       try {
-        const data = await getAllUsersDummy(); // Obtiene los usuarios
+        const data = await userService.getAllUsersDummy();
         setUsersData(data);
       } catch (error) {
         console.error('Error fetching data:', error); // Manejo de errores

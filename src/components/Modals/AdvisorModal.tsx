@@ -1,17 +1,10 @@
-import React from "react";
-import { Modal, Button, Form, InputGroup } from "react-bootstrap";
-import {
-  BsPerson,
-  BsGenderAmbiguous,
-  BsPersonBadge,
-  BsMortarboardFill,
-  BsXCircle,
-  BsCheckCircle,
-} from "react-icons/bs";
-import { Advisor } from "../../shared/models/advisor.class";
-import { AdvisorErrors } from "../../shared/forms-errors/advisor-error.class";
+import React from 'react';
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
+import { BsPerson, BsGenderAmbiguous, BsPersonBadge, BsMortarboardFill, BsXCircle, BsCheckCircle } from 'react-icons/bs';
+import { Advisor } from '../../shared/models/advisor.class';
+import { AdvisorErrors } from '../../shared/forms-errors/advisor-error.class';
 
-import { dummyDegrees } from "../../shared/mocks/degrees";
+import { dummyDegrees } from '../../shared/mocks/degrees';
 
 interface AdvisorModalProps {
   show: boolean;
@@ -20,24 +13,14 @@ interface AdvisorModalProps {
   advisor: Advisor;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   errors: AdvisorErrors;
-  mode: "Agregar" | "Editar"; //Lo use para saber si va a editar o agregar
+  mode: 'Agregar' | 'Editar'; //Lo use para saber si va a editar o agregar
 }
 
-const AdvisorModal: React.FC<AdvisorModalProps> = ({
-  show,
-  handleClose,
-  handleSaveChanges,
-  advisor,
-  handleInputChange,
-  errors,
-  mode,
-}) => {
+const AdvisorModal: React.FC<AdvisorModalProps> = ({ show, handleClose, handleSaveChanges, advisor, handleInputChange, errors, mode }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          {mode === "Agregar" ? "Agregar Asesor" : "Editar Asesor"}
-        </Modal.Title>
+        <Modal.Title>{mode === 'Agregar' ? 'Agregar Asesor' : 'Editar Asesor'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form className="p-2">
@@ -47,18 +30,8 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({
               <InputGroup.Text>
                 <BsPersonBadge className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Matrícula"
-                name="Enrollment"
-                value={advisor.Enrollment}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.Enrollment}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.Enrollment}
-              </Form.Control.Feedback>
+              <Form.Control type="text" placeholder="Matrícula" name="Enrollment" value={advisor.Enrollment} onChange={handleInputChange} required isInvalid={!!errors.Enrollment} />
+              <Form.Control.Feedback type="invalid">{errors.Enrollment}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -68,20 +41,11 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({
               <InputGroup.Text>
                 <BsGenderAmbiguous className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                as="select"
-                name="Gender"
-                value={advisor.Gender}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.Gender}
-              >
+              <Form.Control as="select" name="Gender" value={advisor.Gender} onChange={handleInputChange} required isInvalid={!!errors.Gender}>
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
               </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {errors.Gender}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.Gender}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -91,18 +55,8 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Nombre"
-                name="Name"
-                value={advisor.Name}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.Name}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.Name}
-              </Form.Control.Feedback>
+              <Form.Control type="text" placeholder="Nombre" name="Name" value={advisor.Name} onChange={handleInputChange} required isInvalid={!!errors.Name} />
+              <Form.Control.Feedback type="invalid">{errors.Name}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -112,42 +66,24 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({
               <InputGroup.Text>
                 <BsMortarboardFill className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                as="select"
-                name="DegreeIdentity"
-                value={advisor.DegreeIdentity}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.DegreeIdentity}
-              >
+              <Form.Control as="select" name="DegreeIdentity" value={advisor.DegreeIdentity} onChange={handleInputChange} required isInvalid={!!errors.DegreeIdentity}>
                 {dummyDegrees.map((degree) => (
                   <option key={degree.Identity} value={degree.Identity}>
                     {degree.DegreeName}
                   </option>
                 ))}
               </Form.Control>
-              <Form.Control.Feedback type="invalid">
-                {errors.DegreeIdentity}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.DegreeIdentity}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer className="my-2">
-        <Button
-          onClick={handleClose}
-          className="d-flex align-items-center justify-content-center"
-          variant="secondary"
-        >
+        <Button onClick={handleClose} className="d-flex align-items-center justify-content-center" variant="secondary">
           <BsXCircle className="me-1 fs-5" /> Cancelar
         </Button>
-        <Button
-          onClick={handleSaveChanges}
-          className="button d-flex align-items-center justify-content-center"
-          variant="primary"
-        >
-          <BsCheckCircle className="me-1 fs-5" />{" "}
-          {mode === "Agregar" ? "Guardar" : "Actualizar"}
+        <Button onClick={handleSaveChanges} className="button d-flex align-items-center justify-content-center" variant="primary">
+          <BsCheckCircle className="me-1 fs-5" /> {mode === 'Agregar' ? 'Guardar' : 'Actualizar'}
         </Button>
       </Modal.Footer>
     </Modal>

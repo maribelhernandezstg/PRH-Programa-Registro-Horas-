@@ -3,7 +3,7 @@ import Home from '../pages/Home';
 import Excel from '../pages/Excel';
 import Asesores from '../pages/Advisors';
 import Asesorados from '../pages/Advisees';
-import Asesorias from '../pages/Advices';
+import Asesorias from '../pages/AdvisorySessions';
 import Reportes from '../pages/Reports';
 import Login from '../pages/Login/Login';
 import Users from '../pages/Users';
