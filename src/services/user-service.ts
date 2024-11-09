@@ -42,7 +42,7 @@ export class UserService {
     return axios
       .post(`${environment.API_URL}/login/`, body, { headers })
       .then((response) => {
-        const token = response.data.token;
+        const token = response.headers['authorization'];
         util.saveLocalStorage('token', token);
         return response.data;
       })
