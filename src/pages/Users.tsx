@@ -1,11 +1,15 @@
 import '../App.css';
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, InputGroup, Form, Spinner } from 'react-bootstrap';
-import { BsPersonVcardFill, BsXCircleFill, BsPersonBadgeFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
+import { BsPersonVcardFill, BsXCircleFill, BsPersonBadgeFill, BsPersonAdd, BsPeopleFill, BsArrowClockwise } from 'react-icons/bs';
+
+import CustomToast from '../components/Toast/Toast';
 
 import UserTable from '../components/Tables/UserTable';
 import UserModal from '../components/Modals/UserModal';
+
 import '../components/tables/Styles.css';
+
 import { UserService } from '../services/user-service';
 import { User } from '../shared/models/user.class';
 
@@ -16,6 +20,19 @@ const Users = () => {
   // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
   const [searchUserId, setSearchUserId] = useState('');
+  const [searchType, setSearchType] = useState('');
+
+  const typeOptions = [
+    { value: '', label: 'Tipo' },
+    { value: '1', label: 'Admin' },
+    { value: '2', label: 'Recepción' },
+    { value: '3', label: 'Asesor' },
+  ];
+
+  // Función para manejar el cambio de tipo en el dropdown
+  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchType(event.target.value);
+  };
 
   // Estado para manejar el loader
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -23,97 +40,101 @@ const Users = () => {
   // Estado para almacenar los usuarios
   const [users, setUsersData] = useState<User[]>([]);
 
+  // Estado para almacenar el usuario seleccionado
+  const [selectedUser, setSelectedUserData] = useState<User>(new User());
+
   // Estado para controlar el estado de los usuarios
   const toggleUserStatus = (enrollment: number) => {
-    setUsersData((prev) => prev.map((registro) => (registro.Enrollment === enrollment ? { ...registro, Active: !registro.Active } : registro)));
+    setUsersData((prev) => prev.map((register) => (register.Enrollment === enrollment ? { ...register, Active: !register.Active } : register)));
   };
 
   // Estado para controlar la visibilidad del modal
   const [showUserModal, setShowUserModal] = useState(false);
 
-  // Valor inicial para un nuevo usuario
-  const initialUser: User = {
-    Enrollment: 0,
-    Name: '',
-    Password: '',
-    Type: 0,
-    UserCreation: 0,
-    CreatedAt: new Date(),
-    UserUpdate: 0,
-    UpdatedAt: new Date(),
-    Active: false,
+  // Estado para controlar si se esta editando
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Funciones para mostrar modal
+  const handleShowUserModal = () => {
+    setShowUserModal(true);
+    setIsEditing(false);
   };
 
-  // Funciones para mostrar y cerrar el modal
-  const handleShowUserModal = () => setShowUserModal(true);
-  const handleCloseUserModal = () => {
-    setShowUserModal(false);
-    setNewUser(initialUser); // Reiniciar al cerrar
-    setEditUser(initialUser); // Reiniciar el usuario editado
+  // Filtrar Registros
+  const filteredRegisters = users.filter(
+    (register) => register.Name.toLowerCase().includes(searchName.toLowerCase()) && register.Enrollment.toString().includes(searchUserId.toLowerCase()) && (searchType ? register.Type.toString().includes(searchType.toLowerCase()) : true) // Filtra solo si hay un valor de searchType
+  );
+  // Seleccionar User
+  const handleSelectUser = (user: User) => {
+    setSelectedUserData({
+      ...new User(),
+      ...user,
+    });
+    setShowUserModal(true);
+    setIsEditing(true);
   };
 
-  // Estado para manejar una nuevo usuario, editar usuario y errores
-  const [newUser, setNewUser] = useState<User>(initialUser);
-  const [editUser, setEditUser] = useState<User>(initialUser);
-  const [errors, setErrors] = useState({ Name: '', Enrollment: '' });
+  // Estados para controlar el toast
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'danger' | 'info' | 'warning'>('info');
 
-  // Manejar el cambio en el formulario del modal
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, type, checked, value } = e.target;
-    setNewUser((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+  // Estado para controlar el toast
+  type ToastType = 'success' | 'danger' | 'info' | 'warning';
+  const handleToast = (message: string, type: ToastType, show: boolean) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(show);
   };
 
-  const handleEditUser = (usuario: { Name: string; Enrollment: number; Active: boolean }) => {
-    const updatedUser: User = {
-      ...editUser,
-      Name: usuario.Name,
-      Enrollment: usuario.Enrollment,
-      Active: usuario.Active,
-      UpdatedAt: new Date(),
-    };
-    setEditUser(updatedUser);
-    setNewUser(updatedUser); // Esto debería cargar la información en el formulario
-    handleShowUserModal(); // Mostrar el modal
-  };
-
-  const handleSaveChanges = () => {
-    const { Name, Enrollment } = newUser;
-    const validationErrors = { Name: '', Enrollment: '' };
-
-    if (!Name) validationErrors.Name = 'Este campo es obligatorio';
-    if (!Enrollment) validationErrors.Enrollment = 'Este campo es obligatorio';
-
-    if (validationErrors.Name || validationErrors.Enrollment) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    if (editUser) {
-      setUsersData((prev) => prev.map((registro) => (registro.Enrollment === editUser.Enrollment ? newUser : registro)));
+  // Guardar/Editar User
+  const handleSaveUser = async (user: User) => {
+    setLoadingUsers(true);
+    if (isEditing) {
+      try {
+        const response = await userService.updateUser(user.Enrollment, user);
+        user.Password = '';
+        if (response) {
+          setUsersData((prevUsers) => prevUsers.map((existingUser) => (existingUser.Enrollment === user.Enrollment ? user : existingUser)));
+          handleToast('Se ha actualizado el usuario correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
+      } finally {
+        setLoadingUsers(false);
+      }
     } else {
-      setUsersData((prev) => [...prev, newUser]);
+      try {
+        const response = await userService.register(user);
+        if (response) {
+          user.Password = '';
+          setUsersData((prevUsers) => [...prevUsers, user]);
+          handleToast('Se ha creado el usuario correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
+      } finally {
+        setLoadingUsers(false);
+      }
     }
-
-    handleCloseUserModal();
   };
-  // Filtrar registros
-  const filteredRegistros = users.filter((registro) => registro.Name.toLowerCase().includes(searchName.toLowerCase()) && registro.Enrollment.toString().includes(searchUserId.toLowerCase()));
+
+  const getUsers = async () => {
+    setLoadingUsers(true);
+    try {
+      const data = await userService.getAllUsers();
+      setUsersData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
 
   // Cargar las asesorías al montar el componente
   useEffect(() => {
     const fetchAdvices = async () => {
-      setLoadingUsers(true);
-      try {
-        const data = await userService.getAllUsersDummy();
-        setUsersData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error); // Manejo de errores
-      } finally {
-        setLoadingUsers(false); // Finaliza la carga
-      }
+      getUsers();
     };
 
     fetchAdvices();
@@ -121,8 +142,6 @@ const Users = () => {
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
-      <UserModal show={showUserModal} handleClose={handleCloseUserModal} handleSaveChanges={handleSaveChanges} user={newUser} handleInputChange={handleInputChange} errors={errors} />
-
       <Row className="px-2 py-1">
         <Col xs={10} lg={8}>
           <h1 className="fs-3 fw-bold text-start">Usuarios</h1>
@@ -136,26 +155,45 @@ const Users = () => {
             </InputGroup.Text>
             <Form.Control placeholder="Nombre(s)" aria-label="Nombre(s)" value={searchName} onChange={(e) => setSearchName(e.target.value)} aria-describedby="basic-addon1" />
           </InputGroup>
+
           <InputGroup className="me-3">
             <InputGroup.Text id="basic-addon2">
               <BsPersonVcardFill className="fs-5" />
             </InputGroup.Text>
             <Form.Control placeholder="Matrícula" aria-label="Matrícula" value={searchUserId} onChange={(e) => setSearchUserId(e.target.value)} aria-describedby="basic-addon2" />
           </InputGroup>
+
+          <InputGroup className="me-3">
+            <InputGroup.Text id="basic-addon3">
+              <BsPeopleFill className="fs-5" />
+            </InputGroup.Text>
+            <Form.Select aria-label="Tipo" value={searchType} onChange={handleTypeChange}>
+              {typeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Form.Select>
+          </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
-          <Button className="button d-flex align-items-center justify-content-center me-1">
+          <Button
+            className="button d-flex align-items-center justify-content-center me-1"
+            onClick={() => {
+              setSearchName('');
+              setSearchType('');
+              setSearchUserId('');
+            }}>
             <BsXCircleFill className="me-1 fs-5" />
-            Limpiar
-          </Button>
-          <Button className="button d-flex align-items-center justify-content-center" onClick={() => console.log('Buscando...')}>
-            <BsSearch className="me-1 fs-5" />
-            Buscar
+            Limpiar Filtros
           </Button>
         </Col>
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
-        <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
+        <Col xs={12} lg={12} className="d-flex justify-content-between my-2">
+          <Button className="button d-flex align-items-center justify-content-center me-1" onClick={getUsers}>
+            <BsArrowClockwise className=" fs-5" />
+          </Button>
           <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowUserModal}>
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
@@ -170,11 +208,13 @@ const Users = () => {
               </div>
             ) : (
               // Tabla de usuarios filtrados
-              <UserTable DataSource={filteredRegistros} toggleUserStatus={toggleUserStatus} handleEditUser={handleEditUser} />
+              <UserTable DataSource={filteredRegisters} toggleUserStatus={toggleUserStatus} handleEditUser={handleSelectUser} />
             )}
           </Container>
         </Col>
       </Row>
+      <UserModal show={showUserModal} isEditing={isEditing} setShowUserModal={setShowUserModal} user={selectedUser} setSelectedUserData={setSelectedUserData} handleSaveUser={handleSaveUser} />
+      <CustomToast show={showToast} message={toastMessage} type={toastType} duration={3000} onClose={() => setShowToast(false)} />
     </Container>
   );
 };

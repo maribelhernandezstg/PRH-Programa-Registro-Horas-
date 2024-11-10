@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { BsPerson, BsGenderAmbiguous, BsPersonBadge, BsMortarboardFill, BsXCircle, BsCheckCircle } from 'react-icons/bs';
 import { Advisor } from '../../shared/models/advisor.class';
@@ -8,19 +8,44 @@ import { dummyDegrees } from '../../shared/mocks/degrees';
 
 interface AdvisorModalProps {
   show: boolean;
-  handleClose: () => void;
-  handleSaveChanges: () => void;
+  isEditing: boolean;
+  setShowAdvisorModal: (show: boolean) => void;
   advisor: Advisor;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  errors: AdvisorErrors;
-  mode: 'Agregar' | 'Editar'; //Lo use para saber si va a editar o agregar
+  setSelectedAdvisor: (selectedAdvisor: any) => void;
+  handleSaveAdvisor: (advisor: Advisor) => void;
 }
 
-const AdvisorModal: React.FC<AdvisorModalProps> = ({ show, handleClose, handleSaveChanges, advisor, handleInputChange, errors, mode }) => {
+const AdvisorModal: React.FC<AdvisorModalProps> = ({ show, isEditing, setShowAdvisorModal, advisor, setSelectedAdvisor, handleSaveAdvisor }) => {
+  const initialAdvisor: Advisor = new Advisor();
+  const [errors, setErrors] = useState(new AdvisorErrors());
+
+  const handleSaveChanges = async () => {
+    const newErrors = new AdvisorErrors(!advisor.Enrollment ? 'Campo requerido' : '', !advisor.Gender ? 'Campo requerido' : '', !advisor.Name ? 'Campo requerido' : '', !advisor.DegreeIdentity ? 'Campo requerido' : '');
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).every((error) => error === '')) {
+      handleSaveAdvisor(advisor);
+      handleCloseAdvisorModal();
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, type, checked, value } = e.target;
+    setSelectedAdvisor((prev: any) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleCloseAdvisorModal = () => {
+    setShowAdvisorModal(false);
+    setSelectedAdvisor(initialAdvisor);
+  };
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleCloseAdvisorModal}>
       <Modal.Header closeButton>
-        <Modal.Title>{mode === 'Agregar' ? 'Agregar Asesor' : 'Editar Asesor'}</Modal.Title>
+        <Modal.Title>{!isEditing ? 'Agregar Asesor' : 'Editar Asesor'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form className="p-2">
@@ -41,7 +66,7 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({ show, handleClose, handleSa
               <InputGroup.Text>
                 <BsGenderAmbiguous className="fs-5" />
               </InputGroup.Text>
-              <Form.Control as="select" name="Gender" value={advisor.Gender} onChange={handleInputChange} required isInvalid={!!errors.Gender}>
+              <Form.Control as="select" name="Gender" value={advisor.Gender || 'Masculino'} onChange={handleInputChange} required isInvalid={!!errors.Gender}>
                 <option value="Masculino">Masculino</option>
                 <option value="Femenino">Femenino</option>
               </Form.Control>
@@ -79,11 +104,11 @@ const AdvisorModal: React.FC<AdvisorModalProps> = ({ show, handleClose, handleSa
         </Form>
       </Modal.Body>
       <Modal.Footer className="my-2">
-        <Button onClick={handleClose} className="d-flex align-items-center justify-content-center" variant="secondary">
+        <Button onClick={handleCloseAdvisorModal} className="d-flex align-items-center justify-content-center" variant="secondary">
           <BsXCircle className="me-1 fs-5" /> Cancelar
         </Button>
         <Button onClick={handleSaveChanges} className="button d-flex align-items-center justify-content-center" variant="primary">
-          <BsCheckCircle className="me-1 fs-5" /> {mode === 'Agregar' ? 'Guardar' : 'Actualizar'}
+          <BsCheckCircle className="me-1 fs-5" /> {!isEditing ? 'Guardar' : 'Actualizar'}
         </Button>
       </Modal.Footer>
     </Modal>

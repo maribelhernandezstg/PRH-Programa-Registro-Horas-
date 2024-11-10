@@ -1,7 +1,7 @@
 import '../App.css';
 import { Container, Row, Button, InputGroup, Col, Form, Spinner } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
+import { BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsXCircleFill, BsPersonAdd, BsArrowClockwise } from 'react-icons/bs';
 
 import CustomToast from '../components/Toast/Toast';
 
@@ -9,100 +9,130 @@ import AdviseeTable from '../components/Tables/AdviseeTable';
 import AdviseeModal from '../components/Modals/AdviseeModal';
 
 import { AdviseeService } from '../services/advisee-service';
-
 import { Advisee } from '../shared/models/advisee.class';
-import { AdviseeErrors } from '../shared/forms-errors/advisee-error.class';
+
+import { DegreeService } from '../services/degree-service';
+import { Degree } from '../shared/models/degree.class';
 
 const Advisees = () => {
   //Instancia de mi servicio
   const adviseeService = new AdviseeService();
+  const degreeService = new DegreeService();
 
+  // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
   const [searchStudentId, setSearchStudentId] = useState('');
   const [searchCareer, setSearchCareer] = useState('');
-  const [loadingAdvisees, setLoadingAdvisees] = useState(true);
-  const [advisees, setAdviseesData] = useState<Advisee[]>([]);
-  const [showAdviseeModal, setShowAdviseeModal] = useState(false);
-  const [selectedAdvisee, setSelectedAdvisee] = useState<Advisee | null>(null);
-  const [newAdvisee, setNewAdvisee] = useState<Advisee>(new Advisee());
-  const [errors, setErrors] = useState<AdviseeErrors>(new AdviseeErrors());
 
+  // Estado para manejar el loader
+  const [loadingAdvisees, setLoadingAdvisees] = useState(true);
+
+  // Estado para almacenar los asesorados
+  const [advisees, setAdviseesData] = useState<Advisee[]>([]);
+
+  // Estado para almacenar las carreras
+  const [degrees, setDegresData] = useState<Degree[]>([]);
+
+  // Estado para almacenar el asesorado seleccionado
+  const [selectedAdvisee, setSelectedAdvisee] = useState<Advisee>(new Advisee());
+
+  // Estados para controlar el toast
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'danger' | 'info' | 'warning'>('info');
 
-  const handleShowAdviseeModal = () => setShowAdviseeModal(true);
-  const handleCloseAdviseeModal = () => {
-    setShowAdviseeModal(false);
-    setSelectedAdvisee(null);
-    setNewAdvisee(new Advisee());
-    setErrors(new AdviseeErrors());
+  // Estado para controlar la visibilidad del modal
+  const [showAdviseeModal, setShowAdviseeModal] = useState(false);
+
+  // Estado para controlar si se esta editando
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Funciones para mostrar modal
+  const handleShowAdviseeModal = () => {
+    setShowAdviseeModal(true);
+    setIsEditing(false);
   };
 
-  const handleEditAdvisee = (advisee: Advisee) => {
-    setSelectedAdvisee(advisee);
-    setNewAdvisee({ ...advisee });
-    handleShowAdviseeModal();
+  // Estado para controlar el toast
+  type ToastType = 'success' | 'danger' | 'info' | 'warning';
+  const handleToast = (message: string, type: ToastType, show: boolean) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(show);
   };
 
-  const handleSaveChanges = async () => {
-    console.log(newAdvisee);
-    const newErrors = new AdviseeErrors(!newAdvisee.Enrollment ? 'Campo requerido' : '', !newAdvisee.Gender ? 'Campo requerido' : '', !newAdvisee.Name ? 'Campo requerido' : '', !newAdvisee.DegreeIdentity ? 'Campo requerido' : '');
+  // Estado guardar/actualizar el asesorado
+  const handleSaveAdvisee = async (advisee: Advisee) => {
     setLoadingAdvisees(true);
-    setErrors(newErrors);
-
-    if (Object.values(newErrors).every((error) => error === '')) {
-      if (selectedAdvisee) {
-        const updatedAdvisees = advisees.map((advisee) => (advisee.Enrollment === selectedAdvisee.Enrollment ? newAdvisee : advisee));
-        setAdviseesData(updatedAdvisees);
-      } else {
-        try {
-          await adviseeService.createAdvisee(newAdvisee);
-        } catch (error: any) {
-          setToastMessage(error.message);
-          setToastType('warning');
-          setShowToast(true);
-        } finally {
-          setLoadingAdvisees(false);
-        }
-        setAdviseesData([...advisees, newAdvisee]);
-      }
-      handleCloseAdviseeModal();
-    }
-  };
-
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewAdvisee({ ...newAdvisee, [name]: value });
-  };
-
-  const filteredAdvisees: Advisee[] = advisees
-    .filter((advisee) => {
-      const regexName = new RegExp(searchName, 'i');
-      const regexStudentId = new RegExp(searchStudentId, 'i');
-      const regexCareer = new RegExp(searchCareer, 'i');
-
-      return (!searchName || regexName.test(advisee.Name)) && (!searchStudentId || regexStudentId.test(advisee.Enrollment.toString())) && (!searchCareer || regexCareer.test(advisee.degree.ShortName));
-    })
-    .map((advisee) => ({
-      Name: advisee.Name,
-      Enrollment: advisee.Enrollment,
-      Gender: advisee.Gender,
-      DegreeIdentity: advisee.DegreeIdentity,
-      degree: advisee.degree,
-    }));
-
-  useEffect(() => {
-    const fetchAdvices = async () => {
-      setLoadingAdvisees(true);
+    if (isEditing) {
       try {
-        const data = await adviseeService.getAllAdvisees();
-        setAdviseesData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+        const response = await adviseeService.updateAdvisee(advisee.Enrollment, advisee);
+        if (response) {
+          setAdviseesData((prevAdvisees) => prevAdvisees.map((existingAdvisee) => (existingAdvisee.Enrollment === advisee.Enrollment ? advisee : existingAdvisee)));
+          handleToast('Se ha actualizado el asesorado correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
       } finally {
         setLoadingAdvisees(false);
       }
+    } else {
+      try {
+        const response = await adviseeService.createAdvisee(advisee);
+        if (response) {
+          setAdviseesData((prevAdvisees) => [...prevAdvisees, advisee]);
+          handleToast('Se ha creado el asesorado correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
+      } finally {
+        setLoadingAdvisees(false);
+      }
+    }
+  };
+
+  // Filtrar Registros
+  const filteredAdvisees = advisees.filter((register) => register.Name.toLowerCase().includes(searchName.toLowerCase()) && register.Enrollment.toString().includes(searchStudentId.toLowerCase()) && register.DegreeIdentity.toString().includes(searchCareer.toLowerCase()));
+
+  // Función para manejar el cambio de carrera en el dropdown
+  const handleCareerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchCareer(event.target.value);
+  };
+
+  // Seleccionar Asesorado
+  const handleSelectAdvisee = (advisee: Advisee) => {
+    setSelectedAdvisee(advisee);
+    setShowAdviseeModal(true);
+    setIsEditing(true);
+  };
+
+  //Obtener Carreras
+  const getDegrees = async () => {
+    try {
+      const data = await degreeService.getDegrees();
+      setDegresData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  //Obtener Asesorados
+  const getAdvisees = async () => {
+    setLoadingAdvisees(true);
+    try {
+      const data = await adviseeService.getAllAdvisees();
+      setAdviseesData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadingAdvisees(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAdvices = async () => {
+      getAdvisees();
+      getDegrees();
     };
 
     fetchAdvices();
@@ -135,7 +165,14 @@ const Advisees = () => {
             <InputGroup.Text id="basic-addon3">
               <BsMortarboardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Carrera" aria-label="Carrera" value={searchCareer} onChange={(e) => setSearchCareer(e.target.value)} aria-describedby="basic-addon3" />
+            <Form.Select aria-label="Carrera" value={searchCareer} onChange={handleCareerChange}>
+              <option value="">Carrera</option>
+              {degrees.map((degree) => (
+                <option key={degree.Identity} value={degree.Identity}>
+                  {degree.ShortName}
+                </option>
+              ))}
+            </Form.Select>
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
@@ -147,16 +184,15 @@ const Advisees = () => {
               setSearchCareer('');
             }}>
             <BsXCircleFill className="me-1 fs-5" />
-            Limpiar
-          </Button>
-          <Button className="button d-flex align-items-center justify-content-center" onClick={() => console.log('Buscando...')}>
-            <BsSearch className="me-1 fs-5" />
-            Buscar
+            Limpiar Filtros
           </Button>
         </Col>
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
-        <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
+        <Col xs={12} lg={12} className="d-flex justify-content-between my-2">
+          <Button className="button d-flex align-items-center justify-content-center" variant="success" onClick={getAdvisees}>
+            <BsArrowClockwise className=" fs-5" />
+          </Button>
           <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowAdviseeModal}>
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
@@ -169,12 +205,12 @@ const Advisees = () => {
                 <p>Cargando asesorados...</p>
               </div>
             ) : (
-              <AdviseeTable DataSource={filteredAdvisees} onEdit={handleEditAdvisee} />
+              <AdviseeTable DataSource={filteredAdvisees} handleEditAdvisee={handleSelectAdvisee} />
             )}
           </Container>
         </Col>
       </Row>
-      <AdviseeModal show={showAdviseeModal} handleClose={handleCloseAdviseeModal} handleSaveChanges={handleSaveChanges} advisee={newAdvisee} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvisee ? 'Editar' : 'Agregar'} />
+      <AdviseeModal show={showAdviseeModal} isEditing={isEditing} setShowAdviseeModal={setShowAdviseeModal} advisee={selectedAdvisee} setSelectedAdvisee={setSelectedAdvisee} handleSaveAdvisee={handleSaveAdvisee} />
       <CustomToast show={showToast} message={toastMessage} type={toastType} duration={3000} onClose={() => setShowToast(false)} />
     </Container>
   );

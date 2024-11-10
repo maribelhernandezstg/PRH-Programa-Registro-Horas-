@@ -5,10 +5,10 @@ import { Advisee } from '../../shared/models/advisee.class';
 
 interface AdviseeTableProps {
   DataSource: Advisee[];
-  onEdit: (advisee: Advisee) => void;
+  handleEditAdvisee: (advisee: Advisee) => void;
 }
 
-const AdviseeTable: React.FC<AdviseeTableProps> = ({ DataSource, onEdit }) => {
+const AdviseeTable: React.FC<AdviseeTableProps> = (AdviseeTableProps) => {
   return (
     <Table responsive striped bordered hover className="rounded-table text-center">
       <thead>
@@ -21,15 +21,15 @@ const AdviseeTable: React.FC<AdviseeTableProps> = ({ DataSource, onEdit }) => {
         </tr>
       </thead>
       <tbody>
-        {DataSource.length > 0 ? (
-          DataSource.map((registro, index) => (
+        {AdviseeTableProps.DataSource.length > 0 ? (
+          AdviseeTableProps.DataSource.map((register, index) => (
             <tr key={index} className="text-break align-middle">
-              <td style={{ minWidth: 120, maxWidth: 165, height: 65 }}>{registro.Name}</td>
-              <td style={{ minWidth: 100 }}>{registro.Enrollment}</td>
-              <td style={{ minWidth: 100 }}>{registro.degree.ShortName}</td>
-              <td style={{ minWidth: 100 }}>{registro.Gender}</td>
+              <td style={{ minWidth: 120, maxWidth: 165, height: 65 }}>{register.Name}</td>
+              <td style={{ minWidth: 100 }}>{register.Enrollment}</td>
+              <td style={{ minWidth: 100 }}>{register.degree.ShortName}</td>
+              <td style={{ minWidth: 100 }}>{register.Gender}</td>
               <td style={{ minWidth: 125 }}>
-                <Button className="button" onClick={() => onEdit(registro)}>
+                <Button className="button" onClick={() => AdviseeTableProps.handleEditAdvisee(register)}>
                   <BsPencilSquare className="fs-6" />
                 </Button>{' '}
                 <Button className="buttonRed">
@@ -40,7 +40,7 @@ const AdviseeTable: React.FC<AdviseeTableProps> = ({ DataSource, onEdit }) => {
           ))
         ) : (
           <tr>
-            <td colSpan={5} className="fs-5 text-center">
+            <td colSpan={5} className="fs-6 fw-bold text-center">
               No se encontraron asesorados
             </td>
           </tr>

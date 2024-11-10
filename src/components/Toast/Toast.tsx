@@ -14,19 +14,19 @@ const CustomToast: React.FC<CustomToastProps> = ({ show, message, type, duration
   let icon: JSX.Element;
   switch (type) {
     case 'success':
-      icon = <BsCheckCircle className="text-dark" />;
+      icon = <BsCheckCircle className="text-white" />;
       break;
     case 'danger':
-      icon = <BsXCircle className="text-dark" />;
+      icon = <BsXCircle className="text-white" />;
       break;
     case 'info':
-      icon = <BsInfoCircle className="text-dark" />;
+      icon = <BsInfoCircle className="text-white" />;
       break;
     case 'warning':
-      icon = <BsExclamationCircle className="text-dark" />;
+      icon = <BsExclamationCircle className="text-white" />;
       break;
     default:
-      icon = <BsInfoCircle className="text-dark" />;
+      icon = <BsInfoCircle className="text-white" />;
       break;
   }
 
@@ -37,7 +37,7 @@ const CustomToast: React.FC<CustomToastProps> = ({ show, message, type, duration
           <div className="me-2">{icon}</div>
           <strong className="me-auto">{type.toUpperCase()}</strong>
         </Toast.Header>
-        <Toast.Body>{message}</Toast.Body>
+        <Toast.Body className="text-white">{message}</Toast.Body>
       </Toast>
     </ToastContainer>
   );

@@ -1,7 +1,9 @@
 import '../App.css';
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, InputGroup, Form, Spinner } from 'react-bootstrap';
-import { BsArrowDownUp, BsXCircleFill, BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsPersonAdd, BsSearch } from 'react-icons/bs';
+import { BsArrowDownUp, BsXCircleFill, BsPersonVcardFill, BsPersonBadgeFill, BsMortarboardFill, BsPersonAdd, BsArrowClockwise } from 'react-icons/bs';
+
+import CustomToast from '../components/Toast/Toast';
 
 import AdvisorTable from '../components/Tables/AdvisorTable';
 import ClockInModal from '../components/Modals/AdvisorClockIn';
@@ -9,19 +11,14 @@ import AdvisorModal from '../components/Modals/AdvisorModal';
 
 import { AdvisorService } from '../services/advisor-service';
 import { Advisor } from '../shared/models/advisor.class';
-import { AdvisorErrors } from '../shared/forms-errors/advisor-error.class';
 
-// Definición de un tipo simplificado
-interface SimplifiedAdvisor {
-  Name: string;
-  Enrollment: number;
-  Gender: string;
-  DegreeIdentity: string;
-}
+import { DegreeService } from '../services/degree-service';
+import { Degree } from '../shared/models/degree.class';
 
 const Advisors = () => {
   //Instancia de mi servicio
   const advisorService = new AdvisorService();
+  const degreeService = new DegreeService();
 
   // Estados para manejar los filtros de búsqueda
   const [searchName, setSearchName] = useState('');
@@ -34,92 +31,115 @@ const Advisors = () => {
   // Estado para almacenar los asesores
   const [advisors, setAdvisorsData] = useState<Advisor[]>([]);
 
+  // Estado para almacenar las carreras
+  const [degrees, setDegresData] = useState<Degree[]>([]);
+
   // Estados para controlar la visibilidad de los modales
   const [showClockInModal, setShowClockInModal] = useState(false);
   const [showAdvisorModal, setShowAdvisorModal] = useState(false);
 
   // Estado para manejar el asesor seleccionado para editar
-  const [selectedAdvisor, setSelectedAdvisor] = useState<Advisor | null>(null);
+  const [selectedAdvisor, setSelectedAdvisor] = useState<Advisor>(new Advisor());
 
-  // Estado para manejar un nuevo asesor y errores
-  const [newAdvisor, setNewAdvisor] = useState<Advisor>(new Advisor());
-  const [errors, setErrors] = useState<AdvisorErrors>(new AdvisorErrors());
+  // Estados para controlar el toast
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastType, setToastType] = useState<'success' | 'danger' | 'info' | 'warning'>('info');
+
+  // Estado para controlar si se esta editando
+  const [isEditing, setIsEditing] = useState(false);
 
   // Funciones para mostrar y cerrar los modales
   const handleShowClockInModal = () => setShowClockInModal(true);
   const handleCloseClockInModal = () => setShowClockInModal(false);
-  const handleShowAdvisorModal = () => setShowAdvisorModal(true);
-  const handleCloseAdvisorModal = () => {
-    setShowAdvisorModal(false);
-    setSelectedAdvisor(null);
-    setNewAdvisor(new Advisor());
-    setErrors(new AdvisorErrors());
+
+  // Funciones para mostrar modal
+  const handleShowAdvisorModal = () => {
+    setShowAdvisorModal(true);
+    setIsEditing(false);
   };
 
-  // Función para manejar la edición de un asesor
-  const handleEditAdvisor = (advisor: SimplifiedAdvisor) => {
-    // Crear un objeto `Advisor` completo usando el tipo simplificado
-    const fullAdvisor: Advisor = {
-      ...advisor,
-    };
-
-    setSelectedAdvisor(fullAdvisor);
-    setNewAdvisor({ ...fullAdvisor });
-    handleShowAdvisorModal();
+  // Estado para controlar el toast
+  type ToastType = 'success' | 'danger' | 'info' | 'warning';
+  const handleToast = (message: string, type: ToastType, show: boolean) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(show);
   };
 
-  // Maneja la acción de guardar los cambios de la nueva asesoría
-  const handleSaveChanges = () => {
-    const newErrors = new AdvisorErrors(!newAdvisor.Enrollment ? 'Campo requerido' : '', !newAdvisor.Gender ? 'Campo requerido' : '', !newAdvisor.Name ? 'Campo requerido' : '', !newAdvisor.DegreeIdentity ? 'Campo requerido' : '');
-
-    setErrors(newErrors);
-
-    // Si no hay errores, guarda el nuevo asesor o actualiza el existente
-    if (Object.values(newErrors).every((error) => error === '')) {
-      if (selectedAdvisor) {
-        const updatedAdvisors = advisors.map((advisor) => (advisor.Enrollment === selectedAdvisor.Enrollment ? newAdvisor : advisor));
-        setAdvisorsData(updatedAdvisors);
-      } else {
-        setAdvisorsData([...advisors, newAdvisor]);
+  // Estado guardar/actualizar el asesor
+  const handleSaveAdvisor = async (advisor: Advisor) => {
+    setLoadingAdvisors(true);
+    if (isEditing) {
+      try {
+        const response = await advisorService.updateAdvisor(advisor.Enrollment, advisor);
+        if (response) {
+          setAdvisorsData((prevAdvisors) => prevAdvisors.map((existingAdvisor) => (existingAdvisor.Enrollment === advisor.Enrollment ? advisor : existingAdvisor)));
+          handleToast('Se ha actualizado el asesor correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
+      } finally {
+        setLoadingAdvisors(false);
       }
-      handleCloseAdvisorModal();
+    } else {
+      try {
+        const response = await advisorService.createAdvisor(advisor);
+        if (response) {
+          setAdvisorsData((prevAdvisors) => [...prevAdvisors, advisor]);
+          handleToast('Se ha creado el asesor correctamente', 'success', true);
+        }
+      } catch (error: any) {
+        handleToast(error.message, 'warning', true);
+      } finally {
+        setLoadingAdvisors(false);
+      }
     }
   };
 
-  // Maneja los cambios en los campos de entrada del nuevo asesorado
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setNewAdvisor({ ...newAdvisor, [name]: value });
+  // Filtrar Registros
+  const filteredAdvisors = advisors.filter((register) => register.Name.toLowerCase().includes(searchName.toLowerCase()) && register.Enrollment.toString().includes(searchStudentId.toLowerCase()) && register.DegreeIdentity.toString().includes(searchCareer.toLowerCase()));
+
+  // Función para manejar el cambio de carrera en el dropdown
+  const handleCareerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSearchCareer(event.target.value);
   };
 
-  // Filtra y mapea los asesores para `AdvisorTable`
-  const filteredAdvisors: SimplifiedAdvisor[] = advisors
-    .filter((advisor) => {
-      const regexName = new RegExp(searchName, 'i');
-      const regexStudentId = new RegExp(searchStudentId, 'i');
-      const regexCareer = new RegExp(searchCareer, 'i');
+  // Seleccionar Asesor
+  const handleSelectAdvisor = (advisor: Advisor) => {
+    setSelectedAdvisor(advisor);
+    setShowAdvisorModal(true);
+    setIsEditing(true);
+  };
 
-      return (!searchName || regexName.test(advisor.Name)) && (!searchStudentId || regexStudentId.test(advisor.Enrollment.toString())) && (!searchCareer || regexCareer.test(advisor.DegreeIdentity));
-    })
-    .map((advisor) => ({
-      Name: advisor.Name,
-      Enrollment: advisor.Enrollment,
-      Gender: advisor.Gender,
-      DegreeIdentity: advisor.DegreeIdentity,
-    }));
+  //Obtener Carreras
+  const getDegrees = async () => {
+    try {
+      const data = await degreeService.getDegrees();
+      setDegresData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  //Obtener Asesores
+  const getAdvisors = async () => {
+    setLoadingAdvisors(true);
+    try {
+      const data = await advisorService.getAllAdvisors();
+      setAdvisorsData(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoadingAdvisors(false);
+    }
+  };
 
   // Efecto para cargar los asesores al montar el componente
   useEffect(() => {
     const fetchAdvisors = async () => {
-      setLoadingAdvisors(true);
-      try {
-        const data = await advisorService.getAllAdvisors();
-        setAdvisorsData(data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoadingAdvisors(false);
-      }
+      getDegrees();
+      getAdvisors();
     };
 
     fetchAdvisors();
@@ -157,7 +177,14 @@ const Advisors = () => {
             <InputGroup.Text id="basic-addon3">
               <BsMortarboardFill className="fs-5" />
             </InputGroup.Text>
-            <Form.Control placeholder="Carrera" aria-label="Carrera" value={searchCareer} onChange={(e) => setSearchCareer(e.target.value)} aria-describedby="basic-addon3" />
+            <Form.Select aria-label="Carrera" value={searchCareer} onChange={handleCareerChange}>
+              <option value="">Carrera</option>
+              {degrees.map((degree) => (
+                <option key={degree.Identity} value={degree.Identity}>
+                  {degree.ShortName}
+                </option>
+              ))}
+            </Form.Select>
           </InputGroup>
         </Col>
         <Col xs={12} lg={4} className="d-flex justify-content-end my-2">
@@ -169,16 +196,15 @@ const Advisors = () => {
               setSearchCareer('');
             }}>
             <BsXCircleFill className="me-1 fs-5" />
-            Limpiar
-          </Button>
-          <Button className="button d-flex align-items-center justify-content-center" onClick={() => console.log('Buscando...')}>
-            <BsSearch className="me-1 fs-5" />
-            Buscar
+            Limpiar Filtros
           </Button>
         </Col>
       </Row>
       <Row className="shadow-sm rounded overflow-hidden p-2 my-2">
-        <Col xs={12} lg={12} className="d-flex justify-content-end my-2">
+        <Col xs={12} lg={12} className="d-flex justify-content-between my-2">
+          <Button className="button d-flex align-items-center justify-content-center" variant="success" onClick={getAdvisors}>
+            <BsArrowClockwise className=" fs-5" />
+          </Button>
           <Button className="buttonGreen d-flex align-items-center justify-content-center" variant="success" onClick={handleShowAdvisorModal}>
             <BsPersonAdd className="me-1 fs-5" /> Agregar
           </Button>
@@ -191,13 +217,14 @@ const Advisors = () => {
                 <p>Cargando asesores...</p>
               </div>
             ) : (
-              <AdvisorTable DataSource={filteredAdvisors} onEdit={handleEditAdvisor} />
+              <AdvisorTable DataSource={filteredAdvisors} handleEditAdvisor={handleSelectAdvisor} />
             )}
           </Container>
         </Col>
       </Row>
       <ClockInModal show={showClockInModal} handleClose={handleCloseClockInModal} />
-      <AdvisorModal show={showAdvisorModal} handleClose={handleCloseAdvisorModal} handleSaveChanges={handleSaveChanges} advisor={newAdvisor} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvisor ? 'Editar' : 'Agregar'} />
+      <AdvisorModal show={showAdvisorModal} isEditing={isEditing} setShowAdvisorModal={setShowAdvisorModal} advisor={selectedAdvisor} setSelectedAdvisor={setSelectedAdvisor} handleSaveAdvisor={handleSaveAdvisor} />
+      <CustomToast show={showToast} message={toastMessage} type={toastType} duration={3000} onClose={() => setShowToast(false)} />
     </Container>
   );
 };

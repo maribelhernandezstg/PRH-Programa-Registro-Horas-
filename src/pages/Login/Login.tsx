@@ -5,10 +5,10 @@ import { BsPersonVcard, BsKey } from 'react-icons/bs';
 import AdvicesDepartmentImage from '../../assets/Asesorias1.jpeg';
 
 import { UserService } from '../../services/user-service';
+import CustomToast from '../../components/Toast/Toast';
 
 import '../../App.css';
 import './Login.css';
-import CustomToast from '../../components/Toast/Toast';
 
 const Login = () => {
   const userService = new UserService();

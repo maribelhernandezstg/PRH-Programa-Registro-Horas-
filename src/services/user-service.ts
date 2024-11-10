@@ -65,7 +65,7 @@ export class UserService {
         'Content-Type': 'application/json',
         Authorization: `${token}`,
       };
-      const response: AxiosResponse<User> = await axios.post<User>(`${API_URL}/register`, JSON.stringify(user), { headers });
+      const response: AxiosResponse<User> = await axios.post<User>(`${environment.API_URL}/register/`, JSON.stringify(user), { headers });
       return response.data;
     } catch (error) {
       console.error('Error registering user:', error);
