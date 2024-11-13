@@ -54,7 +54,7 @@ const AdviseeModal: React.FC<AdviseeModalProps> = ({ show, isEditing, setShowAdv
               <InputGroup.Text>
                 <BsPersonBadge className="fs-5" />
               </InputGroup.Text>
-              <Form.Control type="text" placeholder="Matrícula" name="Enrollment" value={advisee.Enrollment} onChange={handleInputChange} required isInvalid={!!errors.Enrollment} />
+              <Form.Control type="text" placeholder="Matrícula" name="Enrollment" value={advisee.Enrollment} readOnly={isEditing} onChange={handleInputChange} required isInvalid={!!errors.Enrollment} />
               <Form.Control.Feedback type="invalid">{errors.Enrollment}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>

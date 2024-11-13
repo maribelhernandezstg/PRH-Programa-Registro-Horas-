@@ -70,6 +70,7 @@ const UserModal: React.FC<UserModalProps> = ({ show, isEditing, setShowUserModal
               <Form.Control
                 type="text"
                 placeholder="Ingresa la matrícula del usuario"
+                readOnly={isEditing}
                 name="Enrollment"
                 value={user.Enrollment}
                 onChange={handleInputChange}

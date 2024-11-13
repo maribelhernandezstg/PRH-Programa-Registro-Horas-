@@ -5,8 +5,9 @@ import { User } from '../../shared/models/user.class';
 
 interface UserTableProps {
   DataSource: User[];
-  toggleUserStatus: (enrollment: number) => void;
+  handleConfirmationModal: (title: string, message: string, show: boolean) => void;
   handleEditUser: (user: User) => void;
+  handleSelectUserRemove: (user: User, isActivated: boolean) => void;
 }
 
 const UserTable: React.FC<UserTableProps> = (UserTableProps) => {
@@ -47,11 +48,11 @@ const UserTable: React.FC<UserTableProps> = (UserTableProps) => {
                   <BsPencilSquare className="fs-6 me-1"></BsPencilSquare>Editar
                 </Button>{' '}
                 {register.Active ? (
-                  <Button className="buttonRed" style={{ width: 120 }} onClick={() => UserTableProps.toggleUserStatus(register.Enrollment)}>
+                  <Button className="buttonRed" style={{ width: 120 }} onClick={() => UserTableProps.handleSelectUserRemove(register, false)}>
                     <BsXSquareFill className="fs-6 me-1"></BsXSquareFill>Desactivar
                   </Button>
                 ) : (
-                  <Button className="buttonGreen" style={{ width: 120 }} onClick={() => UserTableProps.toggleUserStatus(register.Enrollment)}>
+                  <Button className="buttonGreen" style={{ width: 120 }} onClick={() => UserTableProps.handleSelectUserRemove(register, true)}>
                     <BsCheckCircle className="fs-6 me-1"></BsCheckCircle>Activar
                   </Button>
                 )}

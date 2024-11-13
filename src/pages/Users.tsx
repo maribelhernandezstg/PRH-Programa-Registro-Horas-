@@ -4,6 +4,7 @@ import { Container, Row, Col, Button, InputGroup, Form, Spinner } from 'react-bo
 import { BsPersonVcardFill, BsXCircleFill, BsPersonBadgeFill, BsPersonAdd, BsPeopleFill, BsArrowClockwise } from 'react-icons/bs';
 
 import CustomToast from '../components/Toast/Toast';
+import ConfirmationModal from '../components/Modals/ConfirmationModal';
 
 import UserTable from '../components/Tables/UserTable';
 import UserModal from '../components/Modals/UserModal';
@@ -43,11 +44,6 @@ const Users = () => {
   // Estado para almacenar el usuario seleccionado
   const [selectedUser, setSelectedUserData] = useState<User>(new User());
 
-  // Estado para controlar el estado de los usuarios
-  const toggleUserStatus = (enrollment: number) => {
-    setUsersData((prev) => prev.map((register) => (register.Enrollment === enrollment ? { ...register, Active: !register.Active } : register)));
-  };
-
   // Estado para controlar la visibilidad del modal
   const [showUserModal, setShowUserModal] = useState(false);
 
@@ -64,8 +60,8 @@ const Users = () => {
   const filteredRegisters = users.filter(
     (register) => register.Name.toLowerCase().includes(searchName.toLowerCase()) && register.Enrollment.toString().includes(searchUserId.toLowerCase()) && (searchType ? register.Type.toString().includes(searchType.toLowerCase()) : true) // Filtra solo si hay un valor de searchType
   );
-  // Seleccionar User
-  const handleSelectUser = (user: User) => {
+  // Seleccionar User Edit
+  const handleSelectUserEdit = (user: User) => {
     setSelectedUserData({
       ...new User(),
       ...user,
@@ -74,10 +70,28 @@ const Users = () => {
     setIsEditing(true);
   };
 
+  // Seleccionar User Delete
+  const handleSelectUserRemove = (user: User, isActivated: boolean) => {
+    setSelectedUserData({
+      ...new User(),
+      ...user,
+    });
+    if (isActivated) {
+      handleConfirmationModal('Desactivar', '¿Estas seguro de desactivar la matricula: ' + user.Enrollment + '?', true);
+    } else {
+      handleConfirmationModal('Activar', '¿Estas seguro de activar la matricula: ' + user.Enrollment + '?', true);
+    }
+  };
+
   // Estados para controlar el toast
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'danger' | 'info' | 'warning'>('info');
+
+  // Estados para controlar el confirmation modal
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [confirmationModalMessage, setConfModalMessage] = useState('');
+  const [confirmationModalTitle, setConfModalTitle] = useState('');
 
   // Estado para controlar el toast
   type ToastType = 'success' | 'danger' | 'info' | 'warning';
@@ -85,6 +99,12 @@ const Users = () => {
     setToastMessage(message);
     setToastType(type);
     setShowToast(show);
+  };
+
+  const handleConfirmationModal = (title: string, message: string, show: boolean) => {
+    setConfModalTitle(title);
+    setConfModalMessage(message);
+    setShowConfirmationModal(show);
   };
 
   // Guardar/Editar User
@@ -119,6 +139,24 @@ const Users = () => {
     }
   };
 
+  // Desactivar User
+  const handleDeleteUser = async () => {
+    setLoadingUsers(true);
+    try {
+      const response = await userService.toggleUserActivation(selectedUser.Enrollment);
+      if (response) {
+        setUsersData((prev) => prev.map((register) => (register.Enrollment === selectedUser.Enrollment ? { ...register, Active: !register.Active } : register)));
+        handleToast(response.data.message, 'success', true);
+      }
+    } catch (error: any) {
+      handleToast(error.message, 'warning', true);
+    } finally {
+      setLoadingUsers(false);
+      setShowConfirmationModal(false);
+    }
+  };
+
+  // Obtener Users
   const getUsers = async () => {
     setLoadingUsers(true);
     try {
@@ -208,12 +246,13 @@ const Users = () => {
               </div>
             ) : (
               // Tabla de usuarios filtrados
-              <UserTable DataSource={filteredRegisters} toggleUserStatus={toggleUserStatus} handleEditUser={handleSelectUser} />
+              <UserTable DataSource={filteredRegisters} handleConfirmationModal={handleConfirmationModal} handleEditUser={handleSelectUserEdit} handleSelectUserRemove={handleSelectUserRemove} />
             )}
           </Container>
         </Col>
       </Row>
       <UserModal show={showUserModal} isEditing={isEditing} setShowUserModal={setShowUserModal} user={selectedUser} setSelectedUserData={setSelectedUserData} handleSaveUser={handleSaveUser} />
+      <ConfirmationModal show={showConfirmationModal} setConfirm={handleDeleteUser} title={confirmationModalTitle} message={confirmationModalMessage} onClose={() => setShowConfirmationModal(false)} />
       <CustomToast show={showToast} message={toastMessage} type={toastType} duration={3000} onClose={() => setShowToast(false)} />
     </Container>
   );

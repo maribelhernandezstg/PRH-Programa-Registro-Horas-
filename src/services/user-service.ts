@@ -90,14 +90,14 @@ export class UserService {
   }
 
   // Activar/desactivar usuario
-  async toggleUserActivation(enrollment: number): Promise<void> {
+  async toggleUserActivation(enrollment: number): Promise<any> {
     try {
       const token = await util.getLocalStorage('token');
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `${token}`,
       };
-      await axios.get(`${API_URL}/active/${enrollment}`, { headers });
+      return await axios.get(`${API_URL}/active/${enrollment}`, { headers });
     } catch (error) {
       console.error(`Error toggling activation status for user with enrollment ${enrollment}:`, error);
       throw new Error(`Error toggling activation status for user with enrollment ${enrollment}`);
