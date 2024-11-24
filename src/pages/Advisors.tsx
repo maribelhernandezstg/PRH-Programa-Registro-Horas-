@@ -97,6 +97,23 @@ const Advisors = () => {
     }
   };
 
+  //Desactivar Asesores
+  const handleToggleActivation = async (enrollment: number, active: boolean) => {
+    try {
+      await advisorService.toggleAdvisorActivation(enrollment); // Llama al servicio
+      setAdvisorsData((prevAdvisors) =>
+        prevAdvisors.map((advisor) =>
+          advisor.Enrollment === enrollment ? { ...advisor, Active: !active } : advisor
+        )
+      );
+      handleToast('El estado del asesor se actualizó correctamente', 'success', true);
+    } catch (error) {
+      console.error('Error al cambiar el estado de activación:', error);
+      handleToast('Error al cambiar el estado del asesor', 'danger', true);
+    }
+  };
+
+
   // Filtrar Registros
   const filteredAdvisors = advisors.filter((register) => register.Name.toLowerCase().includes(searchName.toLowerCase()) && register.Enrollment.toString().includes(searchStudentId.toLowerCase()) && register.DegreeIdentity.toString().includes(searchCareer.toLowerCase()));
 
@@ -217,7 +234,7 @@ const Advisors = () => {
                 <p>Cargando asesores...</p>
               </div>
             ) : (
-              <AdvisorTable DataSource={filteredAdvisors} handleEditAdvisor={handleSelectAdvisor} />
+              <AdvisorTable DataSource={filteredAdvisors} handleEditAdvisor={handleSelectAdvisor} handleToggleActivation={handleToggleActivation}/>
             )}
           </Container>
         </Col>
