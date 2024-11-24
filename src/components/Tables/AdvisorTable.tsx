@@ -6,7 +6,7 @@ import { Advisor } from '../../shared/models/advisor.class';
 interface AdvisorTableProps {
   DataSource: Advisor[];
   handleEditAdvisor: (advisor: Advisor) => void;
-  handleToggleActivation: (enrollment: number, active: boolean) => void; // Nueva propiedad
+  handleToggleActivation: (enrollment: number, active: boolean) => void;
 }
 
 const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource, handleEditAdvisor, handleToggleActivation }) => {
@@ -36,9 +36,9 @@ const AdvisorTable: React.FC<AdvisorTableProps> = ({ DataSource, handleEditAdvis
                 </Button>{' '}
                 {/* Botón de activar/desactivar */}
                 <Button
-                  className={`buttonRed ${register.Active ? 'btn-danger' : 'btn-secondary'}`} // Rojo si está activo, gris si está inactivo
+                  className={`btn ${register.Active ? 'btn-danger' : 'btn-primary'}`} // Rojo si está activo, azul si está inactivo
                   onClick={() => handleToggleActivation(register.Enrollment, register.Active)}
-                  title={register.Active ? 'Desactivar' : 'Activar'} // Tooltip descriptivo
+                  title={register.Active ? 'Desactivar' : 'Activar'} 
                 >
                   <BsXSquareFill className="fs-6" />
                 </Button>
