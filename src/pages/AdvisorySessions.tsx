@@ -32,6 +32,9 @@ interface SimplifiedAdvice {
 const Advices = () => {
   //Instancia de mi servicio
   const advisorySessionsService = new AdvisorySessionService();
+
+  const [advisees, setAdvisees] = useState<Advisee[]>([]);//Almacenar asesorados activos
+
   const [advisors, setAdvisors] = useState<Advisor[]>([]); // Estado para los asesores activos
 
   const [learningUnits, setLearningUnits] = useState<LearningUnit[]>([]);
@@ -185,6 +188,19 @@ useEffect(() => {
     }
   };
 
+  const fetchActiveAdvisees = async () => {
+    try {
+      const adviseeService = new AdviseeService();
+      const allAdvisees = await adviseeService.getAllAdvisees();
+      const activeAdvisees = allAdvisees.filter((advisee) => advisee.Active); // Filtrar solo los activos
+      setAdvisees(activeAdvisees);
+      console.log("Active advisees:", activeAdvisees);
+    } catch (error) {
+      console.error("Error al obtener los asesorados activos:", error);
+    }
+  };
+
+  fetchActiveAdvisees();
   fetchLearningUnits();
   fetchActiveAdvisors();
 }, []);
@@ -268,7 +284,7 @@ useEffect(() => {
       </Row>
 
       {/* Modal para añadir/editar asesorías */}
-      <AdviceModal show={showAdviceModal} handleClose={handleCloseAdviceModal} handleSaveChanges={handleSaveChanges} advice={newAdvice} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvice ? 'Editar' : 'Agregar'}  learningUnits={learningUnits} advisors={advisors}/>
+      <AdviceModal show={showAdviceModal} handleClose={handleCloseAdviceModal} handleSaveChanges={handleSaveChanges} advice={newAdvice} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvice ? 'Editar' : 'Agregar'}  learningUnits={learningUnits} advisors={advisors} advisees={advisees}/>
     </Container>
   );
 };

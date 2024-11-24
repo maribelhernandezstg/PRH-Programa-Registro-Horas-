@@ -13,6 +13,7 @@ import { AdvisorySession } from "../../shared/models/advisory-session.class";
 import { AdvisorySessionErrors } from "../../shared/forms-errors/advisory-session-error.class";
 import { LearningUnit } from "../../shared/models/learning-unit.class";
 import { Advisor } from "../../shared/models/advisor.class";
+import { Advisee } from "../../shared/models/advisee.class";
 
 interface AdviceModalProps {
   show: boolean;
@@ -24,8 +25,9 @@ interface AdviceModalProps {
   ) => void;
   errors: AdvisorySessionErrors;
   mode: "Agregar" | "Editar";
-  learningUnits: LearningUnit[]; 
+  learningUnits: LearningUnit[];
   advisors: Advisor[];
+  advisees: Advisee[];
 }
 
 const AdviceModal: React.FC<AdviceModalProps> = ({
@@ -36,8 +38,9 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
   handleInputChange,
   errors,
   mode,
-  learningUnits, 
+  learningUnits,
   advisors,
+  advisees,
 }) => {
   return (
     <Modal show={show} onHide={handleClose}>
@@ -48,6 +51,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
       </Modal.Header>
       <Modal.Body>
         <Form className="p-2">
+          {/* Campo: Asesor */}
           <Form.Group controlId="formAdvisor" className="mb-3">
             <Form.Label>Asesor</Form.Label>
             <InputGroup className="shadow-sm">
@@ -56,7 +60,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               </InputGroup.Text>
               <Form.Select
                 name="AdvisorIdentity"
-                value={advice.AdvisorIdentity}
+                value={advice.AdvisorIdentity || ""}
                 onChange={handleInputChange}
                 required
                 isInvalid={!!errors.AdvisorIdentity}
@@ -74,27 +78,52 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Asesorado */}
           <Form.Group controlId="formAdvisee" className="mb-3">
             <Form.Label>Asesorado</Form.Label>
             <InputGroup className="shadow-sm">
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Nombre del asesorado"
+              <Form.Select
                 name="AdviseeIdentity"
-                value={advice.AdviseeIdentity}
-                onChange={handleInputChange}
+                value={advice.AdviseeIdentity || ""}
+                onChange={(e) => {
+                  const selectedAdvisee = advisees.find(
+                    (advisee) => advisee.Enrollment === Number(e.target.value)
+                  );
+                  if (selectedAdvisee) {
+                    handleInputChange({
+                      target: {
+                        name: "AdviseeIdentity",
+                        value: selectedAdvisee.Enrollment.toString(),
+                      },
+                    });
+                    handleInputChange({
+                      target: {
+                        name: "AdviseeStudentId",
+                        value: selectedAdvisee.Enrollment.toString(),
+                      },
+                    });
+                  }
+                }}
                 required
                 isInvalid={!!errors.AdviseeIdentity}
-              />
+              >
+                <option value="">Seleccione un asesorado</option>
+                {advisees.map((advisee) => (
+                  <option key={advisee.Enrollment} value={advisee.Enrollment}>
+                    {advisee.Name}
+                  </option>
+                ))}
+              </Form.Select>
               <Form.Control.Feedback type="invalid">
                 {errors.AdviseeIdentity}
               </Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Matrícula (readonly) */}
           <Form.Group controlId="formEnrollment" className="mb-3">
             <Form.Label>Matrícula</Form.Label>
             <InputGroup className="shadow-sm">
@@ -103,11 +132,9 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               </InputGroup.Text>
               <Form.Control
                 type="text"
-                placeholder="Matrícula del asesorado"
                 name="AdviseeStudentId"
-                value={advice.AdviseeStudentId}
-                onChange={handleInputChange}
-                required
+                value={advice.AdviseeStudentId || ""}
+                readOnly
                 isInvalid={!!errors.AdviseeStudentId}
               />
               <Form.Control.Feedback type="invalid">
@@ -116,6 +143,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Materia */}
           <Form.Group controlId="formLearningUnit" className="mb-3">
             <Form.Label>Materia</Form.Label>
             <InputGroup className="shadow-sm">
@@ -124,7 +152,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               </InputGroup.Text>
               <Form.Select
                 name="LearningUnitIdentity"
-                value={advice.LearningUnitIdentity}
+                value={advice.LearningUnitIdentity || ""}
                 onChange={handleInputChange}
                 required
                 isInvalid={!!errors.LearningUnitIdentity}
@@ -142,6 +170,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Tema */}
           <Form.Group controlId="formTopic" className="mb-3">
             <Form.Label>Tema</Form.Label>
             <InputGroup className="shadow-sm">
@@ -152,7 +181,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
                 type="text"
                 placeholder="Tema de la asesoría"
                 name="Topic"
-                value={advice.Topic}
+                value={advice.Topic || ""}
                 onChange={handleInputChange}
                 required
                 isInvalid={!!errors.Topic}
@@ -163,6 +192,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Hora de Inicio */}
           <Form.Group controlId="formStartTime" className="mb-3">
             <Form.Label>Hora de Inicio</Form.Label>
             <InputGroup className="shadow-sm">
@@ -185,6 +215,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Hora de Fin */}
           <Form.Group controlId="formEndTime" className="mb-3">
             <Form.Label>Hora de Fin</Form.Label>
             <InputGroup className="shadow-sm">
