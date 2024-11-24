@@ -10,6 +10,15 @@ import { AdvisorySessionService } from '../services/advisory-session-service';
 import { AdvisorySession } from '../shared/models/advisory-session.class'; // Interfaz para el modelo de sesión de asesoría
 import { AdvisorySessionErrors } from '../shared/forms-errors/advisory-session-error.class';
 
+import { LearningUnitService } from '../services/learning-units-service';
+import { LearningUnit } from '../shared/models/learning-unit.class';
+
+import { Advisor } from '../shared/models/advisor.class';
+import { AdvisorService } from '../services/advisor-service';
+
+import { Advisee } from '../shared/models/advisee.class';
+import { AdviseeService } from '../services/advisee-service';
+
 interface SimplifiedAdvice {
   AdvisorIdentity: string;
   AdviseeIdentity: string;
@@ -23,6 +32,9 @@ interface SimplifiedAdvice {
 const Advices = () => {
   //Instancia de mi servicio
   const advisorySessionsService = new AdvisorySessionService();
+  const [advisors, setAdvisors] = useState<Advisor[]>([]); // Estado para los asesores activos
+
+  const [learningUnits, setLearningUnits] = useState<LearningUnit[]>([]);
 
   // Estados para manejar los filtros de búsqueda
   const [searchAdvisee, setSearchAdvisee] = useState('');
@@ -128,6 +140,7 @@ const Advices = () => {
     }));
 
   // Efecto para cargar las asesorías al montar el componente
+  /*
   useEffect(() => {
     const fetchAdvices = async () => {
       setLoadingAdvices(true);
@@ -143,6 +156,39 @@ const Advices = () => {
 
     fetchAdvices();
   }, []);
+  Comentar el viejo dummys
+  */
+
+  
+// Cargar materias,asesores al montar el componente
+useEffect(() => {
+  const fetchLearningUnits = async () => {
+    try {
+      const learningUnitService = new LearningUnitService(); 
+      const units = await learningUnitService.getAllLearningUnits();
+      setLearningUnits(units); 
+      console.log('Learning Units obtenidas:', units); 
+    } catch (error) {
+      console.error('Error al obtener las materias:', error);
+    }
+  };
+
+  const fetchActiveAdvisors = async () => {
+    try {
+      const advisorService = new AdvisorService();
+      const allAdvisors = await advisorService.getAllAdvisors();
+      const activeAdvisors = allAdvisors.filter((advisor) => advisor.Active); // Filtrar solo asesores activos
+      setAdvisors(activeAdvisors);
+      console.log('Active advisors:', activeAdvisors); // Valida que los datos lleguen correctamente
+    } catch (error) {
+      console.error('Error al obtener los asesores activos:', error);
+    }
+  };
+
+  fetchLearningUnits();
+  fetchActiveAdvisors();
+}, []);
+
 
   return (
     <Container className="mt-4 bg-white" style={{ minHeight: '100vh' }}>
@@ -222,7 +268,7 @@ const Advices = () => {
       </Row>
 
       {/* Modal para añadir/editar asesorías */}
-      <AdviceModal show={showAdviceModal} handleClose={handleCloseAdviceModal} handleSaveChanges={handleSaveChanges} advice={newAdvice} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvice ? 'Editar' : 'Agregar'} />
+      <AdviceModal show={showAdviceModal} handleClose={handleCloseAdviceModal} handleSaveChanges={handleSaveChanges} advice={newAdvice} handleInputChange={handleInputChange} errors={errors} mode={selectedAdvice ? 'Editar' : 'Agregar'}  learningUnits={learningUnits} advisors={advisors}/>
     </Container>
   );
 };

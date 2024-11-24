@@ -11,15 +11,21 @@ import {
 } from "react-icons/bs";
 import { AdvisorySession } from "../../shared/models/advisory-session.class";
 import { AdvisorySessionErrors } from "../../shared/forms-errors/advisory-session-error.class";
+import { LearningUnit } from "../../shared/models/learning-unit.class";
+import { Advisor } from "../../shared/models/advisor.class";
 
 interface AdviceModalProps {
   show: boolean;
   handleClose: () => void;
   handleSaveChanges: () => void;
   advice: AdvisorySession;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
   errors: AdvisorySessionErrors;
   mode: "Agregar" | "Editar";
+  learningUnits: LearningUnit[]; 
+  advisors: Advisor[];
 }
 
 const AdviceModal: React.FC<AdviceModalProps> = ({
@@ -30,6 +36,8 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
   handleInputChange,
   errors,
   mode,
+  learningUnits, 
+  advisors,
 }) => {
   return (
     <Modal show={show} onHide={handleClose}>
@@ -46,15 +54,20 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Nombre del asesor"
+              <Form.Select
                 name="AdvisorIdentity"
                 value={advice.AdvisorIdentity}
                 onChange={handleInputChange}
                 required
                 isInvalid={!!errors.AdvisorIdentity}
-              />
+              >
+                <option value="">Seleccione un asesor</option>
+                {advisors.map((advisor) => (
+                  <option key={advisor.Enrollment} value={advisor.Enrollment}>
+                    {advisor.Name}
+                  </option>
+                ))}
+              </Form.Select>
               <Form.Control.Feedback type="invalid">
                 {errors.AdvisorIdentity}
               </Form.Control.Feedback>
@@ -109,15 +122,20 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsBook className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Nombre de la materia"
+              <Form.Select
                 name="LearningUnitIdentity"
                 value={advice.LearningUnitIdentity}
                 onChange={handleInputChange}
                 required
                 isInvalid={!!errors.LearningUnitIdentity}
-              />
+              >
+                <option value="">Seleccione una materia</option>
+                {learningUnits.map((unit) => (
+                  <option key={unit.Identity} value={unit.Identity}>
+                    {unit.Name}
+                  </option>
+                ))}
+              </Form.Select>
               <Form.Control.Feedback type="invalid">
                 {errors.LearningUnitIdentity}
               </Form.Control.Feedback>
