@@ -60,6 +60,22 @@ const Advisees = () => {
     setToastType(type);
     setShowToast(show);
   };
+  //Baja logica Asesorado
+  const handleToggleActivation = async (enrollment: number, active: boolean) => {
+    try {
+      await adviseeService.toggleAdviseeActivation(enrollment); // Llama al servicio
+      setAdviseesData((prevAdvisees) =>
+        prevAdvisees.map((advisee) =>
+          advisee.Enrollment === enrollment ? { ...advisee, Active: !active } : advisee
+        )
+      );
+      handleToast('El estado del asesorado se actualizó correctamente', 'success', true);
+    } catch (error) {
+      console.error('Error al cambiar el estado de activación:', error);
+      handleToast('Error al cambiar el estado del asesorado', 'danger', true);
+    }
+  };
+  
 
   // Estado guardar/actualizar el asesorado
   const handleSaveAdvisee = async (advisee: Advisee) => {
@@ -205,7 +221,7 @@ const Advisees = () => {
                 <p>Cargando asesorados...</p>
               </div>
             ) : (
-              <AdviseeTable DataSource={filteredAdvisees} handleEditAdvisee={handleSelectAdvisee} />
+              <AdviseeTable DataSource={filteredAdvisees} handleEditAdvisee={handleSelectAdvisee} handleToggleActivation={handleToggleActivation} />
             )}
           </Container>
         </Col>
