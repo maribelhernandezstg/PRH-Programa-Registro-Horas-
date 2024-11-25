@@ -78,67 +78,51 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
-          {/* Campo: Asesorado */}
-          <Form.Group controlId="formAdvisee" className="mb-3">
-            <Form.Label>Asesorado</Form.Label>
+          {/* Campo: Profesor */}
+          <Form.Group controlId="formProfessor" className="mb-3">
+            <Form.Label>Profesor</Form.Label>
             <InputGroup className="shadow-sm">
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Nombre del profesor"
+                name="Professor"
+                value={advice.Professor || ""}
+                onChange={handleInputChange}
+                required
+                isInvalid={!!errors.Professor}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.Professor}
+              </Form.Control.Feedback>
+            </InputGroup>
+          </Form.Group>
+
+          {/* Campo: Asesorado */}
+          <Form.Group controlId="formAdvisee" className="mb-3">
+            <Form.Label>Matrícula del Asesorado</Form.Label>
+            <InputGroup className="shadow-sm">
+              <InputGroup.Text>
+                <BsPersonBadge className="fs-5" />
+              </InputGroup.Text>
               <Form.Select
                 name="AdviseeIdentity"
                 value={advice.AdviseeIdentity || ""}
-                onChange={(e) => {
-                  const selectedAdvisee = advisees.find(
-                    (advisee) => advisee.Enrollment === Number(e.target.value)
-                  );
-                  if (selectedAdvisee) {
-                    handleInputChange({
-                      target: {
-                        name: "AdviseeIdentity",
-                        value: selectedAdvisee.Enrollment.toString(),
-                      },
-                    });
-                    handleInputChange({
-                      target: {
-                        name: "AdviseeStudentId",
-                        value: selectedAdvisee.Enrollment.toString(),
-                      },
-                    });
-                  }
-                }}
+                onChange={handleInputChange}
                 required
                 isInvalid={!!errors.AdviseeIdentity}
               >
-                <option value="">Seleccione un asesorado</option>
+                <option value="">Seleccione una matrícula</option>
                 {advisees.map((advisee) => (
                   <option key={advisee.Enrollment} value={advisee.Enrollment}>
-                    {advisee.Name}
+                    {advisee.Enrollment}
                   </option>
                 ))}
               </Form.Select>
               <Form.Control.Feedback type="invalid">
                 {errors.AdviseeIdentity}
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-
-          {/* Campo: Matrícula (readonly) */}
-          <Form.Group controlId="formEnrollment" className="mb-3">
-            <Form.Label>Matrícula</Form.Label>
-            <InputGroup className="shadow-sm">
-              <InputGroup.Text>
-                <BsPersonBadge className="fs-5" />
-              </InputGroup.Text>
-              <Form.Control
-                type="text"
-                name="AdviseeStudentId"
-                value={advice.AdviseeStudentId || ""}
-                readOnly
-                isInvalid={!!errors.AdviseeStudentId}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.AdviseeStudentId}
               </Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
@@ -192,6 +176,30 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
             </InputGroup>
           </Form.Group>
 
+          {/* Campo: Tipo de Clase */}
+          <Form.Group controlId="formClassType" className="mb-3">
+            <Form.Label>Tipo de Clase</Form.Label>
+            <InputGroup className="shadow-sm">
+              <InputGroup.Text>
+                <BsPerson className="fs-5" />
+              </InputGroup.Text>
+              <Form.Select
+                name="ClassType"
+                value={advice.ClassType || ""}
+                onChange={handleInputChange}
+                required
+                isInvalid={!!errors.ClassType}
+              >
+                <option value="">Seleccione un tipo</option>
+                <option value="Ordinaria">Ordinaria</option>
+                <option value="Asesoria">Asesoría</option>
+              </Form.Select>
+              <Form.Control.Feedback type="invalid">
+                {errors.ClassType}
+              </Form.Control.Feedback>
+            </InputGroup>
+          </Form.Group>
+
           {/* Campo: Hora de Inicio */}
           <Form.Group controlId="formStartTime" className="mb-3">
             <Form.Label>Hora de Inicio</Form.Label>
@@ -202,11 +210,10 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <Form.Control
                 type="time"
                 name="StartTime"
-                value={advice.StartTime.toLocaleTimeString("en-US", {
-                  hour12: false,
-                })}
+                value={advice.StartTime || ""}
                 onChange={handleInputChange}
                 required
+                step="1" // Permite ingresar segundos
                 isInvalid={!!errors.StartTime}
               />
               <Form.Control.Feedback type="invalid">
@@ -225,11 +232,10 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <Form.Control
                 type="time"
                 name="EndTime"
-                value={advice.EndTime.toLocaleTimeString("en-US", {
-                  hour12: false,
-                })}
+                value={advice.EndTime || ""}
                 onChange={handleInputChange}
                 required
+                step="1" // Permite ingresar segundos
                 isInvalid={!!errors.EndTime}
               />
               <Form.Control.Feedback type="invalid">
