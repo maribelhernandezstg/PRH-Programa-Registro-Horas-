@@ -1,53 +1,60 @@
-import React from "react";
-import { Modal, Button, Form, InputGroup } from "react-bootstrap";
-import {
-  BsPerson,
-  BsBook,
-  BsPersonBadge,
-  BsFillCalendarDateFill,
-  BsClock,
-  BsXCircle,
-  BsCheckCircle,
-} from "react-icons/bs";
-import { AdvisorySession } from "../../shared/models/advisory-session.class";
-import { AdvisorySessionErrors } from "../../shared/forms-errors/advisory-session-error.class";
-import { LearningUnit } from "../../shared/models/learning-unit.class";
-import { Advisor } from "../../shared/models/advisor.class";
-import { Advisee } from "../../shared/models/advisee.class";
+import { useState } from 'react';
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
+import { BsPerson, BsBook, BsPersonBadge, BsFillCalendarDateFill, BsClock, BsXCircle, BsCheckCircle } from 'react-icons/bs';
+import { AdvisorySession } from '../../shared/models/advisory-session.class';
+import { AdvisorySessionErrors } from '../../shared/forms-errors/advisory-session-error.class';
+import { LearningUnit } from '../../shared/models/learning-unit.class';
+import { Advisor } from '../../shared/models/advisor.class';
+import { Advisee } from '../../shared/models/advisee.class';
 
 interface AdviceModalProps {
   show: boolean;
-  handleClose: () => void;
-  handleSaveChanges: () => void;
+  isEditing: boolean;
+  setShowAdviceModal: (show: boolean) => void;
   advice: AdvisorySession;
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
-  errors: AdvisorySessionErrors;
-  mode: "Agregar" | "Editar";
+  setSelectedAdvice: (selectedAdvice: any) => void;
+  handleSaveAdvice: (advice: AdvisorySession) => void;
   learningUnits: LearningUnit[];
   advisors: Advisor[];
   advisees: Advisee[];
 }
 
-const AdviceModal: React.FC<AdviceModalProps> = ({
-  show,
-  handleClose,
-  handleSaveChanges,
-  advice,
-  handleInputChange,
-  errors,
-  mode,
-  learningUnits,
-  advisors,
-  advisees,
-}) => {
+const AdviceModal: React.FC<AdviceModalProps> = ({ show, isEditing, setShowAdviceModal, advice, setSelectedAdvice, handleSaveAdvice, learningUnits, advisors, advisees }) => {
+  const initialAdvice: AdvisorySession = new AdvisorySession();
+  const [errors, setErrors] = useState(new AdvisorySessionErrors());
+
+  type FormControlElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  const handleSaveChanges = async () => {
+    console.log(advice);
+    const newErrors = new AdvisorySessionErrors(!advice.AdvisorIdentity ? 'Campo requerido' : '', !advice.Professor ? 'Campo requerido' : '', !advice.AdviseeIdentity ? 'Campo requerido' : '', !advice.LearningUnitIdentity ? 'Campo requerido' : '', !advice.Topic ? 'Campo requerido' : '', !advice.ClassType ? 'Campo requerido' : '', !advice.StartTime ? 'Campo requerido' : '');
+    console.log(newErrors);
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).every((error) => error === '')) {
+      handleSaveAdvice(advice);
+      handleCloseAdviceModal();
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<FormControlElement>) => {
+    const { name, value } = e.target;
+
+    setSelectedAdvice((prev: any) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCloseAdviceModal = () => {
+    setShowAdviceModal(false);
+    setSelectedAdvice(initialAdvice);
+  };
+
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleCloseAdviceModal}>
       <Modal.Header closeButton>
-        <Modal.Title>
-          {mode === "Agregar" ? "Agregar Asesoría" : "Editar Asesoría"}
-        </Modal.Title>
+        <Modal.Title>{!isEditing ? 'Agregar Asesoría' : 'Editar Asesoría'}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form className="p-2">
@@ -58,13 +65,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Select
-                name="AdvisorIdentity"
-                value={advice.AdvisorIdentity || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.AdvisorIdentity}
-              >
+              <Form.Select name="AdvisorIdentity" value={advice.AdvisorIdentity || ''} onChange={handleInputChange} required isInvalid={!!errors.AdvisorIdentity}>
                 <option value="">Seleccione un asesor</option>
                 {advisors.map((advisor) => (
                   <option key={advisor.Enrollment} value={advisor.Enrollment}>
@@ -72,9 +73,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
                   </option>
                 ))}
               </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.AdvisorIdentity}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.AdvisorIdentity}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -85,18 +84,8 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Nombre del profesor"
-                name="Professor"
-                value={advice.Professor || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.Professor}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.Professor}
-              </Form.Control.Feedback>
+              <Form.Control type="text" placeholder="Nombre del profesor" name="Professor" value={advice.Professor || ''} onChange={handleInputChange} required isInvalid={!!errors.Professor} />
+              <Form.Control.Feedback type="invalid">{errors.Professor}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -107,13 +96,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsPersonBadge className="fs-5" />
               </InputGroup.Text>
-              <Form.Select
-                name="AdviseeIdentity"
-                value={advice.AdviseeIdentity || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.AdviseeIdentity}
-              >
+              <Form.Select name="AdviseeIdentity" value={advice.AdviseeIdentity || ''} onChange={handleInputChange} required isInvalid={!!errors.AdviseeIdentity}>
                 <option value="">Seleccione una matrícula</option>
                 {advisees.map((advisee) => (
                   <option key={advisee.Enrollment} value={advisee.Enrollment}>
@@ -121,9 +104,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
                   </option>
                 ))}
               </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.AdviseeIdentity}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.AdviseeIdentity}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -134,13 +115,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsBook className="fs-5" />
               </InputGroup.Text>
-              <Form.Select
-                name="LearningUnitIdentity"
-                value={advice.LearningUnitIdentity || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.LearningUnitIdentity}
-              >
+              <Form.Select name="LearningUnitIdentity" value={advice.LearningUnitIdentity || ''} onChange={handleInputChange} required isInvalid={!!errors.LearningUnitIdentity}>
                 <option value="">Seleccione una materia</option>
                 {learningUnits.map((unit) => (
                   <option key={unit.Identity} value={unit.Identity}>
@@ -148,9 +123,7 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
                   </option>
                 ))}
               </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.LearningUnitIdentity}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.LearningUnitIdentity}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -161,18 +134,8 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsFillCalendarDateFill className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="text"
-                placeholder="Tema de la asesoría"
-                name="Topic"
-                value={advice.Topic || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.Topic}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.Topic}
-              </Form.Control.Feedback>
+              <Form.Control type="text" placeholder="Tema de la asesoría" name="Topic" value={advice.Topic || ''} onChange={handleInputChange} required isInvalid={!!errors.Topic} />
+              <Form.Control.Feedback type="invalid">{errors.Topic}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -183,20 +146,12 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsPerson className="fs-5" />
               </InputGroup.Text>
-              <Form.Select
-                name="ClassType"
-                value={advice.ClassType || ""}
-                onChange={handleInputChange}
-                required
-                isInvalid={!!errors.ClassType}
-              >
+              <Form.Select name="ClassType" value={advice.ClassType || ''} onChange={handleInputChange} required isInvalid={!!errors.ClassType}>
                 <option value="">Seleccione un tipo</option>
                 <option value="Ordinaria">Ordinaria</option>
                 <option value="Asesoria">Asesoría</option>
               </Form.Select>
-              <Form.Control.Feedback type="invalid">
-                {errors.ClassType}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.ClassType}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -207,18 +162,8 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsClock className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="time"
-                name="StartTime"
-                value={advice.StartTime || ""}
-                onChange={handleInputChange}
-                required
-                step="1" // Permite ingresar segundos
-                isInvalid={!!errors.StartTime}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.StartTime}
-              </Form.Control.Feedback>
+              <Form.Control type="time" name="StartTime" value={advice.StartTime || ''} onChange={handleInputChange} required isInvalid={!!errors.StartTime} />
+              <Form.Control.Feedback type="invalid">{errors.StartTime}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
 
@@ -229,37 +174,18 @@ const AdviceModal: React.FC<AdviceModalProps> = ({
               <InputGroup.Text>
                 <BsClock className="fs-5" />
               </InputGroup.Text>
-              <Form.Control
-                type="time"
-                name="EndTime"
-                value={advice.EndTime || ""}
-                onChange={handleInputChange}
-                required
-                step="1" // Permite ingresar segundos
-                isInvalid={!!errors.EndTime}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.EndTime}
-              </Form.Control.Feedback>
+              <Form.Control type="time" name="EndTime" value={advice.EndTime || ''} onChange={handleInputChange} required isInvalid={!!errors.EndTime} />
+              <Form.Control.Feedback type="invalid">{errors.EndTime}</Form.Control.Feedback>
             </InputGroup>
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer className="my-2">
-        <Button
-          onClick={handleClose}
-          className="d-flex align-items-center justify-content-center"
-          variant="secondary"
-        >
+        <Button onClick={handleCloseAdviceModal} className="d-flex align-items-center justify-content-center" variant="secondary">
           <BsXCircle className="me-1 fs-5" /> Cancelar
         </Button>
-        <Button
-          onClick={handleSaveChanges}
-          className="button d-flex align-items-center justify-content-center"
-          variant="primary"
-        >
-          <BsCheckCircle className="me-1 fs-5" />{" "}
-          {mode === "Agregar" ? "Guardar" : "Actualizar"}
+        <Button onClick={handleSaveChanges} className="button d-flex align-items-center justify-content-center" variant="primary">
+          <BsCheckCircle className="me-1 fs-5" /> {!isEditing ? 'Guardar' : 'Actualizar'}
         </Button>
       </Modal.Footer>
     </Modal>

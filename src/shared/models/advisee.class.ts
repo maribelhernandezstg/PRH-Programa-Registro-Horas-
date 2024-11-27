@@ -7,7 +7,7 @@ export class Advisee {
   DegreeIdentity: number;
   degree: Degree;
   Active: boolean;
-  //------------------------------------------------
+
   constructor(Enrollment: number = 0, Gender: string = '', Name: string = '', DegreeIdentity: number = 0, degree: any = {}, Active = true) {
     this.Enrollment = Enrollment;
     this.Gender = Gender;

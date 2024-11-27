@@ -26,6 +26,15 @@ export const util = {
     localStorage.setItem(key, token);
   },
 
+  formatTime: (date: Date | string) => {
+    if (!date) return '';
+
+    const d = new Date(date);
+    const hours = d.getHours().toString().padStart(2, '0');
+    const minutes = d.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  },
+
   getLocalStorage: (key: string): string | null => {
     return localStorage.getItem(key);
   },

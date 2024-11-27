@@ -1,44 +1,39 @@
+import { Advisee } from './advisee.class';
+import { Advisor } from './advisor.class';
+import { LearningUnit } from './learning-unit.class';
+
 export class AdvisorySession {
   Identity: number;
-  //------------------------------------------------
-  //Este dato me lo debe traer con mi LearningUnitIdentity
-  // LearningUnitIdentity: number;
-  LearningUnitIdentity: string;
-  //------------------------------------------------
+  LearningUnitIdentity: number;
   Topic: string;
   Professor: string;
   ClassType: string;
-  //------------------------------------------------
-  //Este dato me lo debe traer con mi AdvisorIdentity
-  // AdvisorIdentity: number;
-  AdvisorIdentity: string;
-  //------------------------------------------------
-  //Este dato me lo debe traer con mi AdviseeIdentity
-  //AdviseeIdentity: number;
-  AdviseeIdentity: string;
-  //------------------------------------------------
-  //Este dato me lo debe traer con mi AdviseeIdentity
-  //------------------------------------------------
-  AdviseeStudentId: string;
-  //------------------------------------------------
+  AdvisorIdentity: number;
+  AdviseeIdentity: number;
   SessionDate: Date;
-  StartTime: Date;
-  EndTime: Date;
+  StartTime: string;
+  EndTime: string;
   UserCreation: number;
   CreatedAt: Date;
   UserUpdate: number;
   UpdatedAt: Date;
   Active: boolean;
 
-  constructor(Identity: number = 0, LearningUnitIdentity: string = '', Topic: string = '', Professor: string = '', ClassType: string = '', AdvisorIdentity: string = '', AdviseeIdentity: string = '', AdviseeStudentId: string = '', SessionDate: Date = new Date(), StartTime: Date = new Date(), EndTime: Date = new Date(), UserCreation: number = 0, CreatedAt: Date = new Date(), UserUpdate: number = 0, UpdatedAt: Date = new Date(), Active: boolean = true) {
+  learningUnit: LearningUnit;
+  advisor: Advisor;
+  advisee: Advisee;
+
+  constructor(Identity: number = 0, learningUnit: any = {}, advisor: any = {}, advisee: any = {}, LearningUnitIdentity: number = 0, Topic: string = '', Professor: string = '', ClassType: string = '', AdvisorIdentity: number = 0, AdviseeIdentity: number = 0, SessionDate: Date = new Date(), StartTime: string = '', EndTime: string = '', UserCreation: number = 0, CreatedAt: Date = new Date(), UserUpdate: number = 0, UpdatedAt: Date = new Date(), Active: boolean = true) {
     this.Identity = Identity;
+    this.learningUnit = learningUnit;
+    this.advisor = advisor;
+    this.advisee = advisee;
     this.LearningUnitIdentity = LearningUnitIdentity;
     this.Topic = Topic;
     this.Professor = Professor;
     this.ClassType = ClassType;
     this.AdvisorIdentity = AdvisorIdentity;
     this.AdviseeIdentity = AdviseeIdentity;
-    this.AdviseeStudentId = AdviseeStudentId;
     this.SessionDate = SessionDate;
     this.StartTime = StartTime;
     this.EndTime = EndTime;
